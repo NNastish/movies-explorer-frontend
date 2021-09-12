@@ -1,0 +1,115 @@
+.techs {
+    max-width: 1280px;
+    min-height: 608px;
+    background-color: #F5F5F5;
+    margin: 0 auto;
+}
+.techs__container {
+    padding: 110px 70px 100px;
+}
+.techs__title {
+    max-width: 1140px;
+    margin-bottom: 44px;
+    font-size: 22px;
+    line-height: 26px;
+    font-weight: 400;
+    padding-bottom: 23px;
+    border-bottom: 1px solid rgba(0, 0, 0, 1);
+}
+.techs__paragraph {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 90px;
+    max-width: 1280px;
+}
+.techs__subtitle {
+    font-size: 50px;
+    line-height: 58px;
+    font-weight: 400;
+    margin-bottom: 26px;
+}
+.techs__text {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 400;
+    max-width: 460px;
+    text-align: center;
+}
+
+.techs__list {
+    display: flex;
+    flex-direction: row;
+    list-style-type: none;
+    padding: 0;
+    gap: 10px;
+    max-width: 690px;
+    margin-top: 100px;
+}
+.techs__box {
+    background: #E8E8E8;
+    border-radius: 10px;
+    width: 90px;
+    padding-top: 21px;
+    padding-bottom: 22px;
+    cursor: pointer;
+    transition: 0.5s;
+
+}
+.techs_stack {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    line-height: 17px;
+    color: #000000;
+    text-decoration: none;
+}
+@media all and (max-width: 768px) {
+    .techs__box {
+        width: 84px;
+    }
+
+    .techs__text {
+        font-size: 12px;
+        line-height: 18px;
+    }
+    .techs_stack {
+        font-size: 12px;
+        line-height: 14px;
+    }
+    .techs__container {
+        /*max-width: 320px;*/
+        padding: 90px 50px 90px;
+        margin: 0 auto;
+    }
+
+}
+
+@media all and (max-width: 709px) {
+    .techs__box {
+        width: 84px;
+    }
+    .techs__subtitle {
+        font-size: 30px;
+        line-height: 36px;
+    }
+    .techs__text {
+        font-size: 11px;
+        line-height: 16px;
+    }
+    .techs_stack {
+        line-height: 15px;
+    }
+    .techs__list {
+        /*flex-direction: column;*/
+        padding-left: 48px;
+        flex-wrap: wrap;
+    }
+    .techs__container {
+        max-width: 320px;
+        padding: 70px 18px 70px;
+    }
+
+}
+

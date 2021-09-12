@@ -1,0 +1,79 @@
+.movies {
+    max-width: 360px;
+    height: 319px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.08);
+    border-radius: 6px;
+}
+.movies__info {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 18px;
+
+}
+.movies__title {
+    font-size: 15px;
+    line-height: 18px;
+    font-weight: 500;
+    margin: 0;
+}
+.movies__time {
+    font-size: 13px;
+    line-height: 18px;
+    font-weight: 400;
+    color: #A0A0A0;
+    margin: 0;
+}
+.movies__image {
+    max-width: 360px;
+    height: 200px;
+}
+.movies__button {
+    position: absolute;
+    align-items: center;
+    width: 100px;
+    height: 29px;
+    right: 37%;
+    bottom: 7%;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 11px;
+    background-color: #F9F9F9;
+    border: 1px solid #fff;
+    border-radius: 30px;
+    cursor: pointer;
+}
+.movies__button-add {
+    position: absolute;
+    align-items: center;
+    width: 100px;
+    height: 29px;
+    background-color: rgba(255, 64, 98, 1);
+    background-image: url('../../images/add.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    right: 37%;
+    bottom: 7%;
+    border: 1px solid #fff;
+    border-radius: 30px;
+    cursor: pointer;
+}
+.movies__button-delete {
+    position: absolute;
+    align-items: center;
+    width: 100px;
+    height: 29px;
+    background-color: #F9F9F9;
+    background-image: url('../../images/close.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 7px, 7px;
+    right: 37%;
+    bottom: 7%;
+    border: 1px solid #fff;
+    border-radius: 30px;
+    cursor: pointer;
+}
