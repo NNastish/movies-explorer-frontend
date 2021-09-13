@@ -41,6 +41,10 @@
     color: rgba(160, 160, 160, 1);
 
 }
+.search__input:focus {
+    outline: none;
+    transition: .6s;
+}
 .search__button {
     width: 80px;
     height: 34px;

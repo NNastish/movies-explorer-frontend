@@ -12,6 +12,8 @@ export default function MoviesCard() {
                 {/*<button className={'movies__button-add'}></button>*/}
                 {/*<button className={'movies__button-delete'}></button>*/}
 
+            {/* Сейчас состояния реализованы как 3 разные кнопки, далее с помощью функционала поменяю это на добавление модификатора   */}
+
             </div>
             <img className={'movies__image'} alt={'Фильм'} src={movie}/>
 

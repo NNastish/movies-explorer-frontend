@@ -36,7 +36,8 @@ export default function Navigation() {
                     <div className={'menu__burger'}></div>
 
                 </div>
-
+            {/* Бургер-меню появляется как на макете на расширении 768px,
+            сейчас скрыто с помощью visibility: hidden в компоненте NavTab */}
             <NavTab />
 
             </div>
