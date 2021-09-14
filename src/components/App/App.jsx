@@ -17,6 +17,7 @@ import SearchForm from '../SearchForm/SearchForm';
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
 import Promo from '../Promo/Promo';
 import Main from "../Main/Main";
+import NavTab from "../NavTab/NavTab";
 
 
 function App() {
@@ -42,13 +43,13 @@ function App() {
                 <Route path='/movies'>
                     <Navigation />
                     <SearchForm />
-                    <MoviesCardList />
+                    <MoviesCardList yandexDb={true}/>
                     <Footer />
                 </Route>
                 <Route path='/saved-movies'>
                     <Navigation />
                     <SearchForm />
-                    <MoviesCardList />
+                    <MoviesCardList yandexDb={false}/>
                     <Footer />
                 </Route>
                 <Route path='/profile'>

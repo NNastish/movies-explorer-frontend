@@ -37,6 +37,10 @@
     border-bottom: 1px solid rgba(232, 232, 232, 1);
     color: #000000;
 }
+.profile__input:focus {
+    outline: none;
+    transition: .6s;
+}
 .profile__input:nth-last-of-type(1) {
     border-bottom: none;
 }

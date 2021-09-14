@@ -54,6 +54,10 @@
     border-bottom: 2px solid #E8E8E8;
     color: rgba(0, 0, 0, 1);
 }
+.register__input:focus {
+    outline: none;
+    transition: .6s;
+}
 .register__input_password {
     color: rgba(255, 64, 98, 1);
 ;

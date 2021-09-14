@@ -64,7 +64,7 @@
     content: none;
 }
 .movies__button-delete {
-    display: none;
+    /*display: none;*/
     position: absolute;
     align-items: center;
     width: 100px;

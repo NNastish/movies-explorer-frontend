@@ -1,12 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Navigation.css';
 import logo from '../../images/logo.svg';
 import account from '../../images/account.svg';
 import close from '../../images/close.svg';
-import {Link} from "react-router-dom";
-import NavTab from "../NavTab/NavTab";
+import {Link} from 'react-router-dom';
+import NavTab from '../NavTab/NavTab';
+
 
 export default function Navigation() {
+    const [navTabOpened, setNavTabOpened] = useState(false);
+
+    function onClick() {
+        console.log(navTabOpened);
+        setNavTabOpened(!navTabOpened);
+    }
+
+    function closePopup() {
+        setNavTabOpened(false);
+    }
+
     return (
         <section className={'navigation'}>
             <div className={'navigation__container'}>
@@ -30,7 +42,7 @@ export default function Navigation() {
                     </li>
                 </ul>
 
-                <div className={'menu'}>
+                <div className={'menu'} onClick={onClick}>
                     <div className={'menu__burger'}></div>
                     <div className={'menu__burger'}></div>
                     <div className={'menu__burger'}></div>
@@ -38,7 +50,7 @@ export default function Navigation() {
                 </div>
             {/* Бургер-меню появляется как на макете на расширении 768px,
             сейчас скрыто с помощью visibility: hidden в компоненте NavTab */}
-            <NavTab />
+            <NavTab visible={navTabOpened} closePopup={closePopup}/>
 
             </div>
         </section>
