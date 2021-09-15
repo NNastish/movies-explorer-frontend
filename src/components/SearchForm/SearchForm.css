@@ -26,6 +26,8 @@
 }
 .search__icon {
     position: absolute;
+    left: 16px;
+    cursor: pointer;
 }
 .search__input {
     display: block;
@@ -39,11 +41,14 @@
     outline: none;
     text-align: center;
     color: rgba(160, 160, 160, 1);
+    cursor: pointer;
 
 }
 .search__input:focus {
     outline: none;
-    transition: .6s;
+    border-radius: 42px;
+    border: 1px solid rgba(232, 232, 232, 1);
+    transition: .3s linear;
 }
 .search__button {
     width: 80px;
@@ -57,7 +62,8 @@
     border: none;
     border-radius: 48px;
     position: absolute;
-    right: 1px;
+    right: 16px;
+    cursor: pointer;
 
 }
 

@@ -28,13 +28,6 @@ function App() {
                     <Header />
                     <Promo />
                     <AboutProject />
-                    <Footer />
-                </Route>
-                <Route exact path='/main'>
-                    <Main />
-                    <Header />
-                    <Promo />
-                    <AboutProject />
                     <Techs />
                     <AboutMe />
                     <Portfolio />

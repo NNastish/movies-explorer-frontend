@@ -46,6 +46,7 @@
     color: #000000;
     text-decoration: none;
     margin: 0;
+    cursor: pointer;
 }
 
 @media all and (max-width: 768px) {

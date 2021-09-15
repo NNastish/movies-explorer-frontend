@@ -64,6 +64,7 @@
     line-height: 17px;
     color: #000000;
     text-decoration: none;
+    cursor: pointer;
 }
 @media all and (max-width: 768px) {
     .techs__box {
