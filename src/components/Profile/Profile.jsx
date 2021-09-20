@@ -11,7 +11,7 @@ export default function Profile() {
 
                 <input className='profile__input' name='name' type='text' placeholder='Имя'
                        minLength='2' value={'Имя'} required/>
-                <input className='profile__input' name='email' type='email' placeholder='Email'
+                <input className='profile__input' name='email' type='email' placeholder='FormField'
                        minLength='4' value={'Email'} required/>
 
                 <div className={'profile__box'}>

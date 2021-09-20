@@ -1,9 +1,9 @@
 import React from 'react';
-import './Header.css';
+import './AuthenticationHeader.css';
 import logo from '../../images/logo.svg';
 import {Link} from 'react-router-dom';
 
-function Header() {
+function AuthenticationHeader() {
     return (
         <header className={'header'}>
             <div className={'header__container'}>
@@ -16,4 +16,4 @@ function Header() {
         </header>
     )
 }
-export default Header;
+export default AuthenticationHeader;

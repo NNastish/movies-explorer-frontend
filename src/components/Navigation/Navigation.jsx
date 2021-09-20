@@ -11,7 +11,6 @@ export default function Navigation() {
     const [navTabOpened, setNavTabOpened] = useState(false);
 
     function onClick() {
-        console.log(navTabOpened);
         setNavTabOpened(!navTabOpened);
     }
 
@@ -46,10 +45,8 @@ export default function Navigation() {
                     <div className={'menu__burger'}></div>
                     <div className={'menu__burger'}></div>
                     <div className={'menu__burger'}></div>
-
                 </div>
-            {/* Бургер-меню появляется как на макете на расширении 768px,
-            сейчас скрыто с помощью visibility: hidden в компоненте NavTab */}
+
             <NavTab visible={navTabOpened} closePopup={closePopup}/>
 
             </div>
