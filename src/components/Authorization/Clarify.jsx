@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {Link, useLocation} from "react-router-dom";
 import { CLARIFY_REGISTER, CLARIFY_LOGIN } from "../../utils/constants";
+import {findEndPoint} from "../../utils/utils";
 
 const Clarify = () => {
     const [state, setState] = useState({
@@ -11,8 +12,7 @@ const Clarify = () => {
     const location = useLocation();
 
     const determineAction = () => {
-        const pathName = location.pathname;
-        const endPoint = pathName.substr(pathName.lastIndexOf('/'));
+        const endPoint = findEndPoint(location);
         if (endPoint === '/signin') {
             setState(CLARIFY_REGISTER);
         } else {

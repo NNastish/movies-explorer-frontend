@@ -1,9 +1,7 @@
 import {FOOTER_HEADER_ENDPOINTS} from "./constants";
 
-const handleLocation = (currentLocation, setVisibility) => {
-    const pathName = currentLocation.pathname;
-    const lastSlashIndex = pathName.lastIndexOf('/');
-    const endPoint = pathName.substr(lastSlashIndex);
+const isHeaderFooterVisible = (currentLocation, setVisibility) => {
+    const endPoint = findEndPoint(currentLocation);
     if (FOOTER_HEADER_ENDPOINTS.includes(endPoint)) {
         setVisibility(true);
     } else {
@@ -11,4 +9,10 @@ const handleLocation = (currentLocation, setVisibility) => {
     }
 }
 
-export { handleLocation };
+const findEndPoint = (currentLocation) => {
+    const pathName = currentLocation.pathname;
+    const lastSlashIndex = pathName.lastIndexOf('/');
+    return pathName.substr(lastSlashIndex);
+}
+
+export { isHeaderFooterVisible, findEndPoint };

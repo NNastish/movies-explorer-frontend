@@ -6,7 +6,7 @@ import Header from "../Header";
 import Footer from "../Footer/Footer";
 import {useLocation} from "react-router-dom";
 import {FOOTER_HEADER_ENDPOINTS} from "../../utils/constants";
-import { handleLocation } from "../../utils/utils";
+import { isHeaderFooterVisible } from "../../utils/utils";
 
 function App() {
     // TODO: change on false basic state
@@ -17,7 +17,7 @@ function App() {
 
 
     useEffect(() => {
-        handleLocation(currentLocation, setHeaderFooterVisibility);
+        isHeaderFooterVisible(currentLocation, setHeaderFooterVisibility);
     }, [currentLocation])
 
     return (
