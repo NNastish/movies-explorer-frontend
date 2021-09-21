@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './MoviesCardList.css';
 import MoviesCard from "../MoviesCard/MoviesCard";
-import { BASE_URL_YANDEX } from "../../utils/MoviesApi";
+import { BASE_URL_YANDEX } from "../../../utils/MoviesApi";
 // import MoviesCard from '../MoviesCard/MoviesCard';
 
 export default function MoviesCardList({ yandexDb, baseFilms, searchQuery }) {

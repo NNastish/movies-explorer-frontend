@@ -5,13 +5,13 @@ import AboutProject from "./AboutProject/AboutProject";
 import Techs from "./Techs/Techs";
 import AboutMe from "./AboutMe/AboutMe";
 import Portfolio from "./Portfolio/Portfolio";
-import SearchForm from "./SearchForm/SearchForm";
-import MoviesCardList from "./MoviesCardList/MoviesCardList";
+import SearchForm from "./MoviesRelatedComponents/SearchForm/SearchForm";
+import MoviesCardList from "./MoviesRelatedComponents/MoviesCardList/MoviesCardList";
 import Profile from "./Profile/Profile";
 import Login from "./Authorization/Login";
 import Register from "./Authorization/Register";
 import NotFound from "./NotFound/NotFound";
-import Movies from "./Movies/Movies";
+import Movies from "./MoviesRelatedComponents/Movies/Movies";
 
 const RouteController = () => {
     return (

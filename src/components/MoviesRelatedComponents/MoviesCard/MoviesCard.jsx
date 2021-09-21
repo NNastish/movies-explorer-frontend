@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './MoviesCard.css';
-import movie from '../../images/movie.jpg'
+import movie from '../../../images/movie.jpg'
 
 export default function MoviesCard({ dbSource, title, duration, imageLink, trailerLink }) {
     const [isButtonClicked, setIsButtonClicked] = useState(false);

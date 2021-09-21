@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import './SearchForm.css';
-import search from '../../images/search.svg'
-import FilterCheckbox from '../FilterCheckbox/FilterCheckbox';
+import search from '../../../images/search.svg'
+import FilterCheckbox from '../../FilterCheckbox/FilterCheckbox';
 
 export default function SearchForm({ query, handleSearchQueryChange}) {
     const inputRef = useRef();

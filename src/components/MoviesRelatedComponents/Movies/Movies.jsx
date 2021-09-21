@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react'
 import SearchForm from "../SearchForm/SearchForm";
 import MoviesCardList from "../MoviesCardList/MoviesCardList";
 import {useLocation} from "react-router-dom";
-import {findEndPoint} from "../../utils/utils";
-import { getBaseFilms } from "../../utils/MoviesApi";
+import {findEndPoint} from "../../../utils/utils";
+import { getBaseFilms } from "../../../utils/MoviesApi";
 
 export default function Movies() {
     // temporary variable
