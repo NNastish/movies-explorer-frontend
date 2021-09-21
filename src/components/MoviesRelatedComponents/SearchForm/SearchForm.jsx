@@ -1,18 +1,15 @@
 import React, { useState, useRef } from 'react';
 import './SearchForm.css';
 import search from '../../../images/search.svg'
-import FilterCheckbox from '../../FilterCheckbox/FilterCheckbox';
+import FilterCheckbox from '../FilterCheckbox/FilterCheckbox';
 
-export default function SearchForm({ query, handleSearchQueryChange}) {
+export default function SearchForm({ handleSearchPhraseChange, handleFilterChange, isFilterOn, setIsSearched }) {
     const inputRef = useRef();
 
-    function handleSubmit(e) {
-        console.log('hello')
+    function handleSearchRequest(e) {
         e.preventDefault();
-        handleSearchQueryChange({
-            ...query,
-            request: inputRef.current.value
-        })
+        handleSearchPhraseChange(inputRef?.current?.value);
+        setIsSearched(true);
         inputRef.current.value = '';
     }
 
@@ -28,9 +25,13 @@ export default function SearchForm({ query, handleSearchQueryChange}) {
                             ref={inputRef}
                             required
                         />
-                        <button type='submit' className='search__button' onClick={handleSubmit}/>
+                        <button type='submit' className='search__button' onClick={handleSearchRequest}/>
                     </div>
-                    <FilterCheckbox filterText={'Короткометражки'} query={query} handleChange={handleSearchQueryChange}/>
+                    <FilterCheckbox
+                        filterText={'Короткометражки'}
+                        handleChange={handleFilterChange}
+                        isFilterOn={isFilterOn}
+                    />
                 </form>
             </div>
         </section>

@@ -1,13 +1,10 @@
 import React from 'react';
 import './FilterCheckbox.css';
 
-export default function FilterCheckbox({filterText, query, handleChange}) {
+export default function FilterCheckbox({filterText, handleChange, isFilterOn}) {
 
     function changeFilterStatus() {
-        handleChange({
-            ...query,
-            filtered: !query.filtered
-        })
+        handleChange(!isFilterOn)
     }
 
     return (
@@ -17,7 +14,7 @@ export default function FilterCheckbox({filterText, query, handleChange}) {
                     <input
                         type='checkbox'
                         className='filter__input'
-                        checked={query.filtered}
+                        checked={isFilterOn}
                         onChange={changeFilterStatus}
                     />
                     <span className='filter__span' />

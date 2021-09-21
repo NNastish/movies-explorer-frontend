@@ -27,7 +27,7 @@ const RouteController = () => {
             <Route path='/movies'>
                 <Movies />
             </Route>
-            {/*TODO: make protected*/}
+            {/*TODO: make protected and maybe change Children to SavedMovies*/}
             <Route path='/saved-movies'>
                 <Movies />
             </Route>

@@ -15,4 +15,8 @@ const findEndPoint = (currentLocation) => {
     return pathName.substr(lastSlashIndex);
 }
 
-export { isHeaderFooterVisible, findEndPoint };
+const sleep = (ms) => {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export { isHeaderFooterVisible, findEndPoint, sleep };

@@ -1,49 +1,44 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import SearchForm from "../SearchForm/SearchForm";
 import MoviesCardList from "../MoviesCardList/MoviesCardList";
 import {useLocation} from "react-router-dom";
 import {findEndPoint} from "../../../utils/utils";
 import { getBaseFilms } from "../../../utils/MoviesApi";
+import MoviesViewController from "../MoviesViewController";
+import { sleep } from "../../../utils/utils";
 
 export default function Movies() {
-    // temporary variable
-    const [isYandexDb, setIsYandexDb] = useState(true);
-    const [baseFilms, setBaseFilms] = useState([]);
-    const [searchQuery, setSearchQuery] = useState({
-        filtered: false,
-        request: ''
-    });
+    const [allFilms, setAllFilms] = useState([]);
+    const [areFilmsQueried, setAreFilmsQueried] = useState(false);
+    const [searchPhrase, setSearchPhrase] = useState('');
+    const [isShortFilmRequired, setIsShortFilmRequired] = useState(false);
+    // const [preloaderState, setPreloaderState] = useState(false);
 
     const currentLocation = useLocation();
-
-
-    useEffect(() => {
-        const endPoint = findEndPoint(currentLocation);
-        if (endPoint === '/movies') {
-            setIsYandexDb(true);
-        } else {
-            setIsYandexDb(false);
-        }
-    }, [currentLocation])
-
 
     // TODO: add check if saved in localstorage then take from there else query server.
     useEffect(() => {
         getBaseFilms()
-            .then((films) => setBaseFilms(films))
-            .catch(console.err);
+            .then((films) => setAllFilms(films))
+            .catch(console.err)
+            .finally(() => {
+            })
     }, [])
 
     return (
         <>
             <SearchForm
-                query={searchQuery}
-                handleSearchQueryChange={setSearchQuery}
+                handleSearchPhraseChange={setSearchPhrase}
+                handleFilterChange={setIsShortFilmRequired}
+                isFilterOn={isShortFilmRequired}
+                setIsSearched={setAreFilmsQueried}
             />
-            <MoviesCardList
-                yandexDb={isYandexDb}
-                baseFilms={baseFilms.slice(0, 9)}
-                searchQuery={searchQuery}
+            <MoviesViewController
+                endPoint={findEndPoint(currentLocation)}
+                allFilms={allFilms}
+                searchPhrase={searchPhrase}
+                isShortFilmRequired={isShortFilmRequired}
+                areFilmsQueried={areFilmsQueried}
             />
         </>
     )
