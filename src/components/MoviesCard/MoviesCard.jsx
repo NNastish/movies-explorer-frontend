@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './MoviesCard.css';
 import movie from '../../images/movie.jpg'
 
-export default function MoviesCard({ dbSource }) {
+export default function MoviesCard({ dbSource, title, duration, imageLink, trailerLink }) {
     const [isButtonClicked, setIsButtonClicked] = useState(false);
 
     const determineButtonClass = () => {
@@ -24,21 +24,19 @@ export default function MoviesCard({ dbSource }) {
     return (
         <div className={'movies'}>
             <div className={'movies__info'}>
-                <h1 className={'movies__title'}>В погоне за Бенкси</h1>
-                <p className={'movies__time'}>27 минут</p>
+                <h1 className={'movies__title'}>{title}</h1>
+                {/*TODO: написать функцию правильно отображающую время*/}
+                <p className={'movies__time'}>{`${duration} минуты`}</p>
                 <button
                     className={determineButtonClass()}
                     onClick={changeButtonState}
                 >
                     {dbSource && !isButtonClicked ? 'Сохранить' : ''}
                 </button>
-                {/*<button className={'movies__button-add'}></button>*/}
-                {/*<button className={'movies__button-delete'}></button>*/}
-
-
             </div>
-            <img className={'movies__image'} alt={'Фильм'} src={movie}/>
-
+            <a target="_blank" href={trailerLink}>
+                <img className={'movies__image'} alt={'Фильм'} src={imageLink}/>
+            </a>
         </div>
     )
 }

@@ -5,7 +5,6 @@ import RouteController from "../RouteController";
 import Header from "../Header";
 import Footer from "../Footer/Footer";
 import {useLocation} from "react-router-dom";
-import {FOOTER_HEADER_ENDPOINTS} from "../../utils/constants";
 import { isHeaderFooterVisible } from "../../utils/utils";
 
 function App() {
