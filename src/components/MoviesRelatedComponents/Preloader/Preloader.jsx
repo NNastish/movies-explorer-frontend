@@ -1,19 +1,14 @@
 import React from 'react';
 import './Preloader.css';
 
-function Preloader({preloaderState, notFound}) {
-    function showPreloader() {
-        return preloaderState || notFound;
-    }
+function Preloader({ preloaderState }) {
 
     return (
         <>
         {
-            showPreloader() &&
             <div className='preloader'>
                 <div className='preloader__container'>
-                    {preloaderState && <span className='preloader__round'/>}
-                    {notFound && <span>Ничего не найдено</span>}
+                    {preloaderState ? <span className='preloader__round'/> : <span>Ничего не найдено</span>}
                 </div>
             </div>
         }

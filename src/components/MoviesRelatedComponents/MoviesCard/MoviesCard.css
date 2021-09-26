@@ -19,6 +19,9 @@
     line-height: 18px;
     font-weight: 500;
     margin: 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 .movies__time {
     font-size: 13px;
@@ -26,6 +29,9 @@
     font-weight: 400;
     color: #A0A0A0;
     margin: 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 .movies__image {
     max-width: 360px;

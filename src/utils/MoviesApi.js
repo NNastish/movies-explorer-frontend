@@ -1,7 +1,6 @@
 // BeatFilm Api
 
 export const BASE_URL_YANDEX =  'https://api.nomoreparties.co';
-///beatfilm-movies
 
 const handleResponse = response => response.ok ? response.json() : Promise.reject(`Ошибка: ${response.status}`)
 

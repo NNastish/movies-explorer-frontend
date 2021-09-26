@@ -1,8 +1,8 @@
 import React from 'react'
 import './NavTab.css'
-import close from "../../images/close.svg";
+import close from "../../../images/close.svg";
 import {Link} from "react-router-dom";
-import account from "../../images/account.svg";
+import account from "../../../images/account.svg";
 
 
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './MoviesCard.css';
-import movie from '../../../images/movie.jpg'
+import { parseFilmDurationToView } from "../../../utils/utils";
 
 export default function MoviesCard({ dbSource, title, duration, imageLink, trailerLink }) {
     const [isButtonClicked, setIsButtonClicked] = useState(false);
@@ -26,7 +26,7 @@ export default function MoviesCard({ dbSource, title, duration, imageLink, trail
             <div className={'movies__info'}>
                 <h1 className={'movies__title'}>{title}</h1>
                 {/*TODO: написать функцию правильно отображающую время*/}
-                <p className={'movies__time'}>{`${duration} минуты`}</p>
+                <p className={'movies__time'}>{parseFilmDurationToView({ duration })}</p>
                 <button
                     className={determineButtonClass()}
                     onClick={changeButtonState}

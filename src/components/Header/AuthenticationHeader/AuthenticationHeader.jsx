@@ -1,6 +1,6 @@
 import React from 'react';
 import './AuthenticationHeader.css';
-import logo from '../../images/logo.svg';
+import logo from '../../../images/logo.svg';
 import {Link} from 'react-router-dom';
 
 function AuthenticationHeader() {
@@ -9,8 +9,16 @@ function AuthenticationHeader() {
             <div className={'header__container'}>
                 <Link to='/'> <img className='header__logo' alt='Логотип' src={logo} /></Link>
                 <div className={'header__nav'}>
-                    <button className={'header__button'}>Регистрация</button>
-                    <button className={'header__button header__button_active'}>Войти</button>
+                    <Link to='/signup'>
+                        <button className={'header__button'}>
+                        Регистрация
+                    </button>
+                    </Link>
+                    <Link to='/signin'>
+                    <button className={'header__button header__button_active'}>
+                        Войти
+                    </button>
+                    </Link>
                 </div>
             </div>
         </header>

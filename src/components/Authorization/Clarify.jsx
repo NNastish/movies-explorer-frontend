@@ -3,13 +3,12 @@ import {Link, useLocation} from "react-router-dom";
 import { CLARIFY_REGISTER, CLARIFY_LOGIN } from "../../utils/constants";
 import {findEndPoint} from "../../utils/utils";
 
-const Clarify = () => {
+const Clarify = ({ location }) => {
     const [state, setState] = useState({
         question: '',
         action: '',
         linkTo: ''
     });
-    const location = useLocation();
 
     const determineAction = () => {
         const endPoint = findEndPoint(location);

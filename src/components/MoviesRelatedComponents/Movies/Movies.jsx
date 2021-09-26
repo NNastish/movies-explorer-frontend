@@ -1,19 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react'
 import SearchForm from "../SearchForm/SearchForm";
-import MoviesCardList from "../MoviesCardList/MoviesCardList";
 import {useLocation} from "react-router-dom";
-import {findEndPoint} from "../../../utils/utils";
+import {findEndPoint, getFilmsFilteredByDuration, getFilmsFilteredByKey, sleep} from "../../../utils/utils";
 import { getBaseFilms } from "../../../utils/MoviesApi";
 import MoviesViewController from "../MoviesViewController";
-import { sleep } from "../../../utils/utils";
+import {SHORT_FILM_DURATION_LIMIT} from "../../../utils/constants";
 
 export default function Movies() {
     const [allFilms, setAllFilms] = useState([]);
     const [areFilmsQueried, setAreFilmsQueried] = useState(false);
     const [searchPhrase, setSearchPhrase] = useState('');
     const [isShortFilmRequired, setIsShortFilmRequired] = useState(false);
-    // const [preloaderState, setPreloaderState] = useState(false);
-
+    const [preloaderState, setPreloaderState] = useState(false);
+    const [films, setFilms] = useState([]);
+    const [shortFilms, setShortFilms] = useState([]);
     const currentLocation = useLocation();
 
     // TODO: add check if saved in localstorage then take from there else query server.
@@ -23,7 +23,29 @@ export default function Movies() {
             .catch(console.err)
             .finally(() => {
             })
-    }, [])
+    }, []);
+
+
+
+    function searchFilms(films) {
+        const filteredByKey = getFilmsFilteredByKey(searchPhrase, films)
+        setFilms(filteredByKey);
+        const filteredByDuration = getFilmsFilteredByDuration(SHORT_FILM_DURATION_LIMIT, filteredByKey);
+        setShortFilms(filteredByDuration);
+    }
+
+    useEffect(() => {
+        setPreloaderState(true);
+        setFilms([]);
+        setShortFilms([]);
+        sleep(1500)
+            .then(() => {
+                searchFilms(allFilms)
+            })
+            .finally(() => {
+                setPreloaderState(false);
+            })
+    }, [searchPhrase])
 
     return (
         <>
@@ -33,13 +55,14 @@ export default function Movies() {
                 isFilterOn={isShortFilmRequired}
                 setIsSearched={setAreFilmsQueried}
             />
-            <MoviesViewController
-                endPoint={findEndPoint(currentLocation)}
-                allFilms={allFilms}
-                searchPhrase={searchPhrase}
-                isShortFilmRequired={isShortFilmRequired}
-                areFilmsQueried={areFilmsQueried}
-            />
+            {
+                areFilmsQueried && <MoviesViewController
+                    preloaderState={preloaderState}
+                    films={films}
+                    shortFilms={shortFilms}
+                    isShortFilmsRequired={isShortFilmRequired}
+                />
+            }
         </>
     )
 }

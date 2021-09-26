@@ -4,7 +4,7 @@ import logo from '../../images/logo.svg';
 import account from '../../images/account.svg';
 import close from '../../images/close.svg';
 import {Link} from 'react-router-dom';
-import NavTab from '../NavTab/NavTab';
+import NavTab from '../Header/NavTab/NavTab';
 
 
 export default function Navigation() {
