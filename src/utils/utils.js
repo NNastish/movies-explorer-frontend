@@ -43,7 +43,11 @@ function getFilmsFilteredByDuration(timeLimit, filmFilteredByKey) {
 function parseFilmDurationToView({ duration }) {
     const hours = Math.floor(duration / 60);
     const minutes = duration % 60;
-    return `${hours}ч ${minutes}м`
+    if (hours > 0) {
+        return `${hours}ч ${minutes}м`;
+    } else {
+        return `${minutes}м`;
+    }
 }
 
 export { isHeaderFooterVisible, findEndPoint, sleep,

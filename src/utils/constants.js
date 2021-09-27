@@ -1,4 +1,4 @@
-const FOOTER_HEADER_ENDPOINTS = ['/', '/movies', '/saved-movies'];
+const FOOTER_HEADER_ENDPOINTS = ['/', '/movies', '/saved-movies', '/profile'];
 const CLARIFY_LOGIN = {
     question: 'Уже зарегестрированы?',
     action: 'Войти',

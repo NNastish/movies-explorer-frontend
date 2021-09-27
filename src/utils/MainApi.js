@@ -42,3 +42,28 @@ export const getUserContent = (token) => {
     })
         .then(response => handleResponse(response))
 }
+
+export const updateUserInfo = (userInfo, token) => {
+    return fetch(`${BASE_URL}/users/me`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(userInfo)
+    })
+        .then(response => handleResponse(response))
+}
+
+const jwt = localStorage.getItem('jwt');
+export const saveMovie = (movie) => {
+    return fetch(`${BASE_URL}/movies`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${jwt}`
+        },
+        body: JSON.stringify(movie)
+    })
+        .then(response => handleResponse(response));
+}

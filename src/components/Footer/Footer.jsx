@@ -1,12 +1,18 @@
-import React, { useState, useEffect } from 'react'
-import { useLocation } from 'react-router-dom';
+import React from 'react'
 import './Footer.css';
-import { FOOTER_HEADER_ENDPOINTS } from "../../utils/constants";
 import FooterElement from "./FooterElement";
+import {findEndPoint} from "../../utils/utils";
 
-export default function Footer({ showFooter }) {
+export default function Footer({ showFooter, currentLocation }) {
+    function isVisible() {
+        if (findEndPoint(currentLocation) === '/profile') {
+            return false;
+        }
+        return showFooter;
+    }
+
     return (
-            <section className={'footer'} style={{visibility: showFooter ? "visible" : "hidden"}}>
+            <section className={'footer'} style={{visibility: isVisible() ? "visible" : "hidden"}}>
                 <div className={'footer__container'}>
                     <h2 className={'footer__title'}>Учебный проект Яндекс.Практикум х BeatFilm.</h2>
                     <div className={'footer__nav'}>

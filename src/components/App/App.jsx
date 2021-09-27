@@ -27,6 +27,12 @@ function App() {
         history.push('/movies');
     }
 
+    function handleExit() {
+        localStorage.removeItem('jwt');
+        setLoggedIn(false);
+        history.push('/');
+    }
+
     async function tokenCheck() {
         try {
             const jwt = localStorage.getItem('jwt');
@@ -65,9 +71,14 @@ function App() {
                     location={currentLocation}
                     promoteLogging={promoteLogging}
                     showError={showError}
+                    setCurrentUser={setCurrentUser}
+                    handleExit={handleExit}
                 />
 
-                <Footer showFooter={headerFooterVisibility}/>
+                <Footer
+                    showFooter={headerFooterVisibility}
+                    currentLocation={currentLocation}
+                />
             </div>
 
         </CurrentUserContext.Provider>

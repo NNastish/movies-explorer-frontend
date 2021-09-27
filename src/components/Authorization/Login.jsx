@@ -31,12 +31,14 @@ function Login({ location, handleLogin }) {
                     type='email'
                     visibleName='Email'
                     name='email'
+                    autoComplete='email'
                     handleChange={handleChange}
                 />
                 <FormField
                     type='password'
                     visibleName='Пароль'
                     name='password'
+                    autoComplete='current-password'
                     handleChange={handleChange}
                 />
                 <button className='auth__button' type='submit'>Войти</button>

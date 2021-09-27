@@ -28,6 +28,7 @@ export default function Register({ location, handleRegister }) {
                     type='text'
                     visibleName='Имя'
                     name='name'
+                    autoComplete='username'
                     handleChange={handleChange}
                 />
                 <FormField
@@ -40,6 +41,7 @@ export default function Register({ location, handleRegister }) {
                     type='password'
                     visibleName='Пароль'
                     name='password'
+                    autoComplete='new-password'
                     handleChange={handleChange}
                 />
                 <button className='auth__button' type='submit'>Зарегистрироваться</button>

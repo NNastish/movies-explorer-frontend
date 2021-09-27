@@ -7,12 +7,15 @@ export default function MoviesCardList({yandexDb, films, addNewElements, isShort
     const renderMovies = (films) => {
         return films.map((film, index) => (
             <MoviesCard
-                key={`${film?.id}${index}`}
-                title={film?.nameRU}
+                // key={`${film?.id}${index}`}
+                // title={film?.nameRU}
+                // dbSource={yandexDb}
+                // duration={film?.duration}
+                // imageLink={`${BASE_URL_YANDEX}${film?.image?.url}`}
+                // trailerLink={film?.trailerLink}
+                key={film.id}
                 dbSource={yandexDb}
-                duration={film?.duration}
-                imageLink={`${BASE_URL_YANDEX}${film?.image?.url}`}
-                trailerLink={film?.trailerLink}
+                film={film}
             />
         ))
     }

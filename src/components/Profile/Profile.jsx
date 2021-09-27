@@ -1,22 +1,46 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Profile.css';
 import logo from "../../images/logo.svg";
 import account from "../../images/account.svg";
 
-export default function Profile() {
+export default function Profile({ currentUser, handleUpdateUser, handleExit }) {
+    const [userData, setUserData] = useState({});
+
+    const updateUser = (e) => {
+        e.preventDefault();
+        handleUpdateUser(userData);
+    }
+
+    const handleChange = (e) => {
+        const {name, value} = e.target;
+        setUserData({
+            ...userData,
+            [name]: value,
+        });
+    }
+
     return (
         <section className={'profile'}>
-            <form className='profile__form'>
-                <h1 className={'profile__title'}>Привет, Виталий!</h1>
+            <form className='profile__form' onSubmit={updateUser}>
+                <h1 className={'profile__title'}>{`Привет, ${currentUser.name}`}</h1>
 
                 <input className='profile__input' name='name' type='text' placeholder='Имя'
-                       minLength='2' value={'Имя'} required/>
-                <input className='profile__input' name='email' type='email' placeholder='FormField'
-                       minLength='4' value={'Email'} required/>
+                       minLength='2'
+                       onChange={handleChange}
+                       defaultValue={`Имя ${currentUser.name}`}
+                       required
+                />
+                <input className='profile__input' name='email' type='email' placeholder='Email'
+                       minLength='4'
+                       onChange={handleChange}
+                       onClick={(e) => e.target.value = ''}
+                       defaultValue={`Email ${currentUser.email}`}
+                       required
+                />
 
                 <div className={'profile__box'}>
-                    <p className='profile__text'>Редактировать</p>
-                    <p className='profile__link'>Выйти из аккаунта</p>
+                    <button className='profile__text' type='submit'>Редактировать</button>
+                    <button className='profile__link' onClick={handleExit}>Выйти из аккаунта</button>
                 </div>
             </form>
         </section>
