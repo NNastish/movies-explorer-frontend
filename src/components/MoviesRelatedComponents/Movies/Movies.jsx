@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import SearchForm from "../SearchForm/SearchForm";
 import {useLocation} from "react-router-dom";
-import {findEndPoint, getFilmsFilteredByDuration, getFilmsFilteredByKey, sleep} from "../../../utils/utils";
+import {findEndPoint, getFilmsFilteredByDuration, getFilmsFilteredByKey, showError, sleep} from "../../../utils/utils";
 import { getBaseFilms } from "../../../utils/MoviesApi";
 import MoviesViewController from "../MoviesViewController";
 import {SHORT_FILM_DURATION_LIMIT} from "../../../utils/constants";
@@ -20,7 +20,7 @@ export default function Movies() {
     useEffect(() => {
         getBaseFilms()
             .then((films) => setAllFilms(films))
-            .catch(console.err)
+            .catch(showError)
             .finally(() => {
             })
     }, []);

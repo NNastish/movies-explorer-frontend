@@ -1,12 +1,13 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../index.css';
 import './App.css';
 import RouteController from "../RouteController";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
-import {useHistory, useLocation} from "react-router-dom";
-import {isHeaderFooterVisible} from "../../utils/utils";
-import {CurrentUserContext} from "../../contexts/CurrentUserContext";
+import { useHistory, useLocation } from "react-router-dom";
+import { isHeaderFooterVisible, showError } from "../../utils/utils";
+import { CurrentUserContext } from "../../contexts/CurrentUserContext";
+import { CurrentLocationContext } from '../../contexts/CurrentLocationContext';
 import * as api from "../../utils/MainApi";
 
 function App() {
@@ -16,10 +17,6 @@ function App() {
     const [currentUser, setCurrentUser] = useState({});
     const currentLocation = useLocation();
     const history = useHistory();
-
-    function showError(error) {
-        console.error('Error: ' + error);
-    }
 
     function promoteLogging(userData) {
         setCurrentUser(userData);
@@ -58,29 +55,31 @@ function App() {
 
     return (
         <CurrentUserContext.Provider value={currentUser}>
+            <CurrentLocationContext.Provider value={currentLocation}>
 
-            <div className='App'>
+                <div className='App'>
 
-                <Header
-                    loggedIn={loggedIn}
-                    showHeader={headerFooterVisibility}
-                />
+                    <Header
+                        loggedIn={loggedIn}
+                        showHeader={headerFooterVisibility}
+                    />
 
-                <RouteController
-                    loggedIn={loggedIn}
-                    location={currentLocation}
-                    promoteLogging={promoteLogging}
-                    showError={showError}
-                    setCurrentUser={setCurrentUser}
-                    handleExit={handleExit}
-                />
+                    <RouteController
+                        loggedIn={loggedIn}
+                        location={currentLocation}
+                        promoteLogging={promoteLogging}
+                        showError={showError}
+                        setCurrentUser={setCurrentUser}
+                        handleExit={handleExit}
+                    />
 
-                <Footer
-                    showFooter={headerFooterVisibility}
-                    currentLocation={currentLocation}
-                />
-            </div>
+                    <Footer
+                        showFooter={headerFooterVisibility}
+                        currentLocation={currentLocation}
+                    />
+                </div>
 
+            </CurrentLocationContext.Provider>
         </CurrentUserContext.Provider>
     );
 }

@@ -9,6 +9,10 @@ const isHeaderFooterVisible = (currentLocation, setVisibility) => {
     }
 }
 
+const showError = (error) => {
+    console.error('Error: ' + error);
+}
+
 const findEndPoint = (currentLocation) => {
     const pathName = currentLocation.pathname;
     const lastSlashIndex = pathName.lastIndexOf('/');
@@ -52,4 +56,4 @@ function parseFilmDurationToView({ duration }) {
 
 export { isHeaderFooterVisible, findEndPoint, sleep,
     getFilmsFilteredByDuration, getFilmsFilteredByKey,
-parseFilmDurationToView};
+parseFilmDurationToView, showError };

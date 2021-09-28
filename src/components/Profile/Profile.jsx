@@ -24,19 +24,25 @@ export default function Profile({ currentUser, handleUpdateUser, handleExit }) {
             <form className='profile__form' onSubmit={updateUser}>
                 <h1 className={'profile__title'}>{`Привет, ${currentUser.name}`}</h1>
 
-                <input className='profile__input' name='name' type='text' placeholder='Имя'
+                <label className='profile__label'>Имя
+                <input className='profile__input' name='name' type='text' 
                        minLength='2'
                        onChange={handleChange}
-                       defaultValue={`Имя ${currentUser.name}`}
+                       defaultValue={currentUser.name}
                        required
                 />
-                <input className='profile__input' name='email' type='email' placeholder='Email'
+                </label>
+
+                <label className='profile__label'>Email
+                <input className='profile__input' name='email' type='email'
                        minLength='4'
                        onChange={handleChange}
                        onClick={(e) => e.target.value = ''}
-                       defaultValue={`Email ${currentUser.email}`}
+                       defaultValue={currentUser.email}
                        required
                 />
+
+                </label>
 
                 <div className={'profile__box'}>
                     <button className='profile__text' type='submit'>Редактировать</button>

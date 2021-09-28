@@ -18,7 +18,6 @@ const MoviesViewController = ({ preloaderState, films, shortFilms, isShortFilmsR
                 preloaderState={preloaderState}
             /> :
             <MoviesCardList
-                yandexDb={true}
                 films={films}
                 shortFilms={shortFilms}
                 isShortFilmsRequired={isShortFilmsRequired}

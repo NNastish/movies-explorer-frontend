@@ -1,21 +1,13 @@
 import React from 'react';
 import './MoviesCardList.css';
 import MoviesCard from "../MoviesCard/MoviesCard";
-import {BASE_URL_YANDEX} from "../../../utils/MoviesApi";
 
-export default function MoviesCardList({yandexDb, films, addNewElements, isShortFilmsRequired, shortFilms}) {
-    const renderMovies = (films) => {
-        return films.map((film, index) => (
+export default function MoviesCardList({ films, addNewElements, isShortFilmsRequired, shortFilms }) {
+    const renderMovies = (movies) => {
+        return movies.map((movie) => (
             <MoviesCard
-                // key={`${film?.id}${index}`}
-                // title={film?.nameRU}
-                // dbSource={yandexDb}
-                // duration={film?.duration}
-                // imageLink={`${BASE_URL_YANDEX}${film?.image?.url}`}
-                // trailerLink={film?.trailerLink}
-                key={film.id}
-                dbSource={yandexDb}
-                film={film}
+                key={movie.id}
+                film={movie}
             />
         ))
     }
