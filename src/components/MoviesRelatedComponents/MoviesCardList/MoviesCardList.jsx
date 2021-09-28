@@ -2,12 +2,14 @@ import React from 'react';
 import './MoviesCardList.css';
 import MoviesCard from "../MoviesCard/MoviesCard";
 
-export default function MoviesCardList({ films, addNewElements, isShortFilmsRequired, shortFilms }) {
+export default function MoviesCardList({ films, addNewElements, isShortFilmsRequired, shortFilms, saveMovie, deleteMovie }) {
     const renderMovies = (movies) => {
         return movies.map((movie) => (
             <MoviesCard
-                key={movie.id}
+                key={movie.id || movie._id}
                 film={movie}
+                saveMovie={saveMovie}
+                deleteMovie={deleteMovie}
             />
         ))
     }

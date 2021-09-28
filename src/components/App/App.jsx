@@ -50,7 +50,7 @@ function App() {
 
     useEffect(() => {
         const tokenCheckStatus = tokenCheck();
-        console.log(tokenCheckStatus);
+        // console.log(tokenCheckStatus);
     }, [])
 
     return (

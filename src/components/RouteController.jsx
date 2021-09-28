@@ -10,6 +10,7 @@ import Login from "./Authorization/Login";
 import Register from "./Authorization/Register";
 import NotFound from "./NotFound/NotFound";
 import Movies from "./MoviesRelatedComponents/Movies/Movies";
+import SavedMovies from "./MoviesRelatedComponents/SavedMovies/SavedMovies";
 import ProtectedRoute from "./ProtectedRoute";
 import * as api from '../utils/MainApi'
 import {CurrentUserContext} from "../contexts/CurrentUserContext";
@@ -74,7 +75,7 @@ const RouteController = ({loggedIn, location, promoteLogging, showError, setCurr
             {/*TODO: maybe change Children to SavedMovies*/}
             <ProtectedRoute
                 path='/saved-movies'
-                component={Movies}
+                component={SavedMovies}
                 loggedIn={loggedIn}
             />
             <ProtectedRoute

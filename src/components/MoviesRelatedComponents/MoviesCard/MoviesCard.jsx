@@ -7,53 +7,50 @@ import * as api from '../../../utils/MainApi';
 
 export default function MoviesCard({ film, saveMovie, deleteMovie }) {
     const [isButtonClicked, setIsButtonClicked] = useState(false);
-    const [buttonClass, setButtonClass] = useState('movies__button');
+    const [buttonClass, setButtonClass] = useState('');
     const [isYandexSource, setIsYandexSource] = useState(true);
-    const [savedMovieId, setSavedMovieId] = useState('');
+    // const [savedMovieId, setSavedMovieId] = useState('');
     const currentLocation = useContext(CurrentLocationContext);
 
-    async function saveMovie(movie) {
-        try {
-            const { country, director, duration, year, description, image, trailerLink: trailer, nameRU, nameEN, id: movieId} = movie;
-            const imageUrl = `${BASE_URL_YANDEX}${image?.url}`
-            const thumbnail = `${BASE_URL_YANDEX}${image?.formats?.thumbnail?.url}`
-            const movieToSave = {country, director, duration, year, description, image: imageUrl, trailer, nameEN, nameRU, movieId, thumbnail};
-            const savedMovie = await api.saveMovie(movieToSave);
-            if (savedMovie) {
-                setSavedMovieId(savedMovie._id);
-            }
-        } catch (e) {
-            showError(e);
-        }
-    }
+    // async function saveMovie(movie) {
+    //     try {
+    //         const { country, director, duration, year, description, image, trailerLink: trailer, nameRU, nameEN, id: movieId } = movie;
+    //         const imageUrl = `${BASE_URL_YANDEX}${image?.url}`
+    //         const thumbnail = `${BASE_URL_YANDEX}${image?.formats?.thumbnail?.url}`
+    //         const movieToSave = { country, director, duration, year, description, image: imageUrl, trailer, nameEN, nameRU, movieId, thumbnail };
+    //         const savedMovie = await api.saveMovie(movieToSave);
+    //         if (savedMovie) {
+    //             setSavedMovieId(savedMovie._id);
+    //         }
+    //     } catch (e) {
+    //         showError(e);
+    //     }
+    // }
 
-    async function deleteMovie(movieId) {
-        try {
-            const deleted = await api.deleteMovie(movieId);
-            if (deleted) {
-                setSavedMovieId('');
-            }
-        } catch (e) {
-            showError(e);
-        }
-    }
+    // async function deleteMovie(movieId) {
+    //     try {
+    //         const deleted = await api.deleteMovie(movieId);
+    //         if (deleted) {
+    //             setSavedMovieId('');
+    //         }
+    //     } catch (e) {
+    //         showError(e);
+    //     }
+    // }
 
     const determineButtonClass = () => {
-        if (isYandexSource) {
-            if (isButtonClicked) {
-                return 'movies__button';
-            }
-            if (!isButtonClicked) {
-                return 'movies__button-add';
-            }
-        } else {
-            return 'movies__button-delete';
+        if (isButtonClicked) {
+            return 'movies__button';
         }
+        return 'movies__button-add';
     }
+
 
     const changeButtonState = () => {
         setIsButtonClicked(!isButtonClicked);
-        setButtonClass(determineButtonClass);
+        if (isYandexSource) {
+            setButtonClass(determineButtonClass());
+        }
     }
 
     const isSave = () => isYandexSource && !isButtonClicked;
@@ -61,16 +58,23 @@ export default function MoviesCard({ film, saveMovie, deleteMovie }) {
     const isButtonNameVisible = () => isSave() ? 'Сохранить' : ''
 
     const handleClick = () => {
-        isSave() ? saveMovie(film) : deleteMovie(savedMovieId);
+        isSave() ? saveMovie(film) : deleteMovie(film._id);
         changeButtonState();
+    }
+
+    const defineImageLink = () => {
+        return isYandexSource ? `${BASE_URL_YANDEX}${film?.image?.url}` : film?.image;
     }
 
     useEffect(() => {
         const endPoint = findEndPoint(currentLocation);
         if (endPoint === '/movies') {
             setIsYandexSource(true);
+            setButtonClass('movies__button');
         } else {
             setIsYandexSource(false);
+            // setSavedMovieId(film?._id);
+            setButtonClass('movies__button-delete');
         }
     }, [currentLocation])
 
@@ -83,11 +87,11 @@ export default function MoviesCard({ film, saveMovie, deleteMovie }) {
                     className={buttonClass}
                     onClick={handleClick}
                 >
-                    {isButtonNameVisible()}
+                    {isYandexSource && isButtonNameVisible()}
                 </button>
             </div>
             <a target="_blank" href={film.trailerLink}>
-                <img className={'movies__image'} alt={'Фильм'} src={`${BASE_URL_YANDEX}${film?.image?.url}`}/>
+                <img className={'movies__image'} alt={'Фильм'} src={defineImageLink()} />
             </a>
         </div>
     )

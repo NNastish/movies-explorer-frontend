@@ -56,13 +56,14 @@ export const updateUserInfo = (userInfo, token) => {
 }
 
 const token = localStorage.getItem('jwt');
+const authorization = `Bearer ${token}`;
 
 export const saveMovie = (movie) => {
     return fetch(`${BASE_URL}/movies`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
+            'Authorization': authorization,
         },
         body: JSON.stringify(movie)
     })
@@ -73,30 +74,19 @@ export const deleteMovie = (movieId) => {
     return fetch(`${BASE_URL}/movies/${movieId}`, {
         method: 'DELETE',
         headers: {
-            authorization: `Bearer ${token}`
+            'Authorization': authorization,
         },
     })
         .then(response => handleResponse(response));
 }
 
-// export const saveMovie = (movie, token) => {
-//     return fetch(`${BASE_URL}/movies`, {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json',
-//             'Authorization': `Bearer ${token}`
-//         },
-//         body: JSON.stringify(movie)
-//     })
-//         .then(response => handleResponse(response));
-// }
-
-// export const deleteMovie = (movieId, token) => {
-//     return fetch(`${BASE_URL}/movies/${movieId}`, {
-//         method: 'DELETE',
-//         headers: {
-//             authorization: `Bearer ${token}`
-//         },
-//     })
-//         .then(response => handleResponse(response));
-// }
+export const getSavedMovies = () => {
+    return fetch(`${BASE_URL}/movies`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': authorization
+        }
+    })
+    .then(response => handleResponse(response));
+}

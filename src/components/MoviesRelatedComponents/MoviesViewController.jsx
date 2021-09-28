@@ -2,7 +2,7 @@ import React from 'react';
 import MoviesCardList from "./MoviesCardList/MoviesCardList";
 import Preloader from "./Preloader/Preloader";
 
-const MoviesViewController = ({ preloaderState, films, shortFilms, isShortFilmsRequired }) => {
+const MoviesViewController = ({ preloaderState, films, shortFilms, isShortFilmsRequired, saveMovie, deleteMovie }) => {
     function defineMovie() {
         return isShortFilmsRequired ? shortFilms : films;
     }
@@ -21,6 +21,8 @@ const MoviesViewController = ({ preloaderState, films, shortFilms, isShortFilmsR
                 films={films}
                 shortFilms={shortFilms}
                 isShortFilmsRequired={isShortFilmsRequired}
+                saveMovie={saveMovie}
+                deleteMovie={deleteMovie}
                 addNewElements={() => console.log('add')}
             />
     )

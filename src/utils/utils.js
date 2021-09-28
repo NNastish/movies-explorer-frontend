@@ -41,7 +41,12 @@ function getFilmsFilteredByDuration(timeLimit, filmFilteredByKey) {
     if (!filmFilteredByKey) {
         return;
     }
-    return filmFilteredByKey.filter((film) => film.duration <= timeLimit);
+    const filtered = filmFilteredByKey.filter((film) => {
+        if (film.duration <= timeLimit) {
+            return film;
+        }
+    });
+    return filtered;
 }
 
 function parseFilmDurationToView({ duration }) {
