@@ -4,23 +4,15 @@ import Greeting from "./Greeting";
 import Clarify from "./Clarify";
 import FormField from "./FormField";
 
-function Login({ location, handleLogin }) {
-    const [login, setLogin] = useState({
-        email: '',
-        password: '',
-    });
-
+function Login({ location, handleLogin, validation }) {
     function handleChange(e) {
-        const {name, value} = e.target;
-        setLogin({
-            ...login,
-            [name]: value,
-        })
+        validation.handleChange(e);
     }
 
     function handleSubmit(e) {
         e.preventDefault();
-        handleLogin(login);
+        handleLogin(validation.values);
+        validation.resetForm();
     }
 
     return (
@@ -33,6 +25,7 @@ function Login({ location, handleLogin }) {
                     name='email'
                     autoComplete='email'
                     handleChange={handleChange}
+                    errors={validation.errors}
                 />
                 <FormField
                     type='password'
@@ -40,8 +33,10 @@ function Login({ location, handleLogin }) {
                     name='password'
                     autoComplete='current-password'
                     handleChange={handleChange}
+                    errors={validation.errors}
+                    minLength={8}
                 />
-                <button className='auth__button' type='submit'>Войти</button>
+                <button className='auth__button' type='submit' disabled={!validation.isValid}>Войти</button>
                 <Clarify location={location}/>
             </form>
         </section>

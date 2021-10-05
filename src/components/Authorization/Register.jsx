@@ -4,20 +4,15 @@ import Greeting from "./Greeting";
 import FormField from "./FormField";
 import Clarify from "./Clarify";
 
-export default function Register({ location, handleRegister }) {
-    const [registration, setRegistration] = useState();
-
+export default function Register({ location, handleRegister, validation }) {
     function handleChange(e) {
-        const {name, value} = e.target;
-        setRegistration({
-            ...registration,
-            [name]: value
-        })
+        validation.handleChange(e);
     }
 
     function handleSubmit(e) {
         e.preventDefault();
-        handleRegister(registration);
+        handleRegister(validation.values);
+        validation.resetForm();
     }
 
     return (
@@ -30,12 +25,14 @@ export default function Register({ location, handleRegister }) {
                     name='name'
                     autoComplete='username'
                     handleChange={handleChange}
+                    errors={validation.errors}
                 />
                 <FormField
                     type='email'
                     visibleName='Email'
                     name='email'
                     handleChange={handleChange}
+                    errors={validation.errors}
                 />
                 <FormField
                     type='password'
@@ -43,8 +40,10 @@ export default function Register({ location, handleRegister }) {
                     name='password'
                     autoComplete='new-password'
                     handleChange={handleChange}
+                    errors={validation.errors}
+                    minLength={8}
                 />
-                <button className='auth__button' type='submit'>Зарегистрироваться</button>
+                <button className='auth__button' type='submit' disabled={!validation.isValid}>Зарегистрироваться</button>
                 <Clarify location={location}/>
             </form>
         </section>

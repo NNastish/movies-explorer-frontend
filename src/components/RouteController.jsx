@@ -16,10 +16,12 @@ import * as api from '../utils/MainApi'
 import {CurrentUserContext} from "../contexts/CurrentUserContext";
 import { CurrentLocationContext } from '../contexts/CurrentLocationContext';
 import { BASE_URL_YANDEX } from '../utils/MoviesApi';
+import { useFormWithValidation } from '../utils/customHooks';
 
 const RouteController = ({loggedIn, promoteLogging, showError, setCurrentUser, handleExit, savedFilms, beatFilms, setSavedFilms }) => {
     const currentUser = useContext(CurrentUserContext);
     const currentLocation = useContext(CurrentLocationContext);
+    const validation = useFormWithValidation();
 
     async function handleLogin(login) {
         try {
@@ -136,12 +138,13 @@ const RouteController = ({loggedIn, promoteLogging, showError, setCurrentUser, h
                 currentUser={currentUser}
                 handleExit={handleExit}
                 handleUpdateUser={handleUpdateUser}
+                validation={validation}
             />
             <Route path='/signin'>
-                <Login location={currentLocation} handleLogin={handleLogin}/>
+                <Login location={currentLocation} handleLogin={handleLogin} validation={validation}/>
             </Route>
             <Route path='/signup'>
-                <Register location={currentLocation} handleRegister={handleRegister}/>
+                <Register location={currentLocation} handleRegister={handleRegister} validation={validation}/>
             </Route>
             <ProtectedRoute
                 path='*'
