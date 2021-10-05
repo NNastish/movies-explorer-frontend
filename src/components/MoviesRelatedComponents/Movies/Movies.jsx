@@ -8,7 +8,7 @@ import {SHORT_FILM_DURATION_LIMIT} from "../../../utils/constants";
 import * as api from '../../../utils/MainApi';
 import { BASE_URL_YANDEX } from '../../../utils/MoviesApi';
 
-export default function Movies() {
+export default function Movies({ saveMovie, deleteMovie, beatFilms }) {
     const [allFilms, setAllFilms] = useState([]);
     const [areFilmsQueried, setAreFilmsQueried] = useState(false);
     const [searchPhrase, setSearchPhrase] = useState('');
@@ -19,39 +19,48 @@ export default function Movies() {
     const currentLocation = useLocation();
 
     // TODO: add check if saved in localstorage then take from there else query server.
-    useEffect(() => {
-        getBaseFilms()
-            .then((films) => setAllFilms(films))
-            .catch(showError)
-            .finally(() => {
-            })
-    }, []);
+    // useEffect(() => {
+    //     getBaseFilms()
+    //         .then((films) => setAllFilms(films))
+    //         .catch(showError)
+    //         .finally(() => {
+    //         })
+    // }, []);
 
-    async function saveMovie(movie) {
-        try {
-            const { country, director, duration, year, description, image, trailerLink: trailer, nameRU, nameEN, id: movieId } = movie;
-            const imageUrl = `${BASE_URL_YANDEX}${image?.url}`
-            const thumbnail = `${BASE_URL_YANDEX}${image?.formats?.thumbnail?.url}`
-            const movieToSave = { country, director, duration, year, description, image: imageUrl, trailer, nameEN, nameRU, movieId, thumbnail };
-            const savedMovie = await api.saveMovie(movieToSave);
-            // if (savedMovie) {
-            //     setSavedMovieId(savedMovie._id);
-            // }
-        } catch (e) {
-            showError(e);
-        }
-    }
+    // async function saveMovie(movie) {
+    //     try {
+    //         const { country, director, duration, year, description, image, trailerLink: trailer, nameRU, nameEN, id: movieId } = movie;
+    //         const imageUrl = `${BASE_URL_YANDEX}${image?.url}`
+    //         const thumbnail = `${BASE_URL_YANDEX}${image?.formats?.thumbnail?.url}`
+    //         const movieToSave = { 
+    //             country: country ?? 'undefined', 
+    //             director: director ?? 'undefined', 
+    //             duration: duration, 
+    //             year: year ?? 'undefined', 
+    //             description: description ?? 'undefined', 
+    //             image: imageUrl, 
+    //             trailer: trailer, 
+    //             nameEN: nameEN ?? 'undefined', 
+    //             nameRU: nameRU ?? 'undefined', 
+    //             movieId: movieId, 
+    //             thumbnail: thumbnail 
+    //         };
+    //         const token = localStorage.getItem('jwt');
+    //         await api.saveMovie(movieToSave, token)
+    //     } catch (e) {
+    //         console.log(e);
+    //         showError(e);
+    //     }
+    // }
 
-    async function deleteMovie(movieId) {
-        try {
-            const deleted = await api.deleteMovie(movieId);
-            // if (deleted) {
-            //     setSavedMovieId('');
-            // }
-        } catch (e) {
-            showError(e);
-        }
-    }
+    // async function deleteMovie(movieId) {
+    //     try {
+    //         const token = localStorage.getItem('jwt');
+    //         await api.deleteMovie(movieId, token);
+    //     } catch (e) {
+    //         showError(e);
+    //     }
+    // }
 
 
     function searchFilms(films) {
@@ -67,7 +76,7 @@ export default function Movies() {
         setShortFilms([]);
         sleep(1500)
             .then(() => {
-                searchFilms(allFilms)
+                searchFilms(beatFilms)
             })
             .finally(() => {
                 setPreloaderState(false);

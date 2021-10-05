@@ -1,4 +1,4 @@
-import {FOOTER_HEADER_ENDPOINTS} from "./constants";
+import {FOOTER_HEADER_ENDPOINTS, HOURS_BETWEEN_LOCALSTORAGE_UPDATE} from "./constants";
 
 const isHeaderFooterVisible = (currentLocation, setVisibility) => {
     const endPoint = findEndPoint(currentLocation);
@@ -41,12 +41,11 @@ function getFilmsFilteredByDuration(timeLimit, filmFilteredByKey) {
     if (!filmFilteredByKey) {
         return;
     }
-    const filtered = filmFilteredByKey.filter((film) => {
+    return filmFilteredByKey.filter((film) => {
         if (film.duration <= timeLimit) {
             return film;
         }
     });
-    return filtered;
 }
 
 function parseFilmDurationToView({ duration }) {
@@ -59,6 +58,24 @@ function parseFilmDurationToView({ duration }) {
     }
 }
 
+const isLocalStorageEmpty = () => {
+    const updateTime = localStorage.getItem('updateTime');
+    const savedFilms = localStorage.getItem('savedFilms');
+    const beatFilms = localStorage.getItem('beatFilms');
+    return !updateTime || !savedFilms || !beatFilms; 
+} 
+
+const timeLocalStorageExpired = () => {
+    const actualTime = new Date();
+    const updateTime = localStorage.getItem('updateTime');
+    const hoursDifference = (actualTime.getTime() - updateTime) / (1000 * 60 * 60);
+    return hoursDifference > HOURS_BETWEEN_LOCALSTORAGE_UPDATE;
+}
+
+const checkIfShouldBeUpdated = () => {
+    return isLocalStorageEmpty() || timeLocalStorageExpired();
+}
+
 export { isHeaderFooterVisible, findEndPoint, sleep,
     getFilmsFilteredByDuration, getFilmsFilteredByKey,
-parseFilmDurationToView, showError };
+parseFilmDurationToView, showError, checkIfShouldBeUpdated };

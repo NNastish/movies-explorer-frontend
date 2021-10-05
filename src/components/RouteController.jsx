@@ -14,18 +14,22 @@ import SavedMovies from "./MoviesRelatedComponents/SavedMovies/SavedMovies";
 import ProtectedRoute from "./ProtectedRoute";
 import * as api from '../utils/MainApi'
 import {CurrentUserContext} from "../contexts/CurrentUserContext";
+import { CurrentLocationContext } from '../contexts/CurrentLocationContext';
+import { BASE_URL_YANDEX } from '../utils/MoviesApi';
 
-const RouteController = ({loggedIn, location, promoteLogging, showError, setCurrentUser, handleExit}) => {
+const RouteController = ({loggedIn, promoteLogging, showError, setCurrentUser, handleExit, savedFilms, beatFilms, setSavedFilms }) => {
     const currentUser = useContext(CurrentUserContext);
+    const currentLocation = useContext(CurrentLocationContext);
 
     async function handleLogin(login) {
         try {
             const loginResponse = await api.login(login);
             if (loginResponse) {
                 const { user, token } = loginResponse;
-                const { name, email } = user;
+                console.log(loginResponse);
+                localStorage.removeItem('jwt');
                 localStorage.setItem('jwt', token);
-                promoteLogging({ name, email });
+                promoteLogging(user);
             }
         } catch (e) {
             showError(e);
@@ -36,7 +40,6 @@ const RouteController = ({loggedIn, location, promoteLogging, showError, setCurr
         try {
             const response = await api.register(register);
             if (response) {
-                // useful fields for login;
                 const {email, password} = register;
                 await handleLogin({email, password});
             }
@@ -58,6 +61,49 @@ const RouteController = ({loggedIn, location, promoteLogging, showError, setCurr
         }
     }
 
+    // change: check if already has film in saved. if So, don't call api
+    async function saveMovie(movie) {
+        try {
+            const { country, director, duration, year, description, image, trailerLink: trailer, nameRU, nameEN, id: movieId } = movie;
+            const imageUrl = `${BASE_URL_YANDEX}${image?.url}`
+            const thumbnail = `${BASE_URL_YANDEX}${image?.formats?.thumbnail?.url}`
+            const movieToSave = { 
+                country: country ?? 'undefined', 
+                director: director ?? 'undefined', 
+                duration: duration, 
+                year: year ?? 'undefined', 
+                description: description ?? 'undefined', 
+                image: imageUrl, 
+                trailer: trailer, 
+                nameEN: nameEN ?? 'undefined', 
+                nameRU: nameRU ?? 'undefined', 
+                movieId: movieId, 
+                thumbnail: thumbnail 
+            };
+            const token = localStorage.getItem('jwt');
+            const isAlreadySaved = savedFilms.some((film) => film.movieId === movieToSave.movieId);
+            console.log(isAlreadySaved);
+            if (!isAlreadySaved) {
+                await api.saveMovie(movieToSave, token)
+            }
+        } catch (e) {
+            showError(e);
+        }
+    }
+
+    async function deleteMovie(movieId) {
+        try {
+            const token = localStorage.getItem('jwt');
+            const deleted = await api.deleteMovie(movieId, token);
+            if (deleted) {
+                const newFilms = savedFilms.filter(film => film._id !== movieId);
+                setSavedFilms(newFilms);
+            }
+        } catch (e) {
+            showError(e);
+        }
+    }
+
     return (
         <Switch>
             <Route exact path='/'>
@@ -71,12 +117,17 @@ const RouteController = ({loggedIn, location, promoteLogging, showError, setCurr
                 path='/movies'
                 component={Movies}
                 loggedIn={loggedIn}
+                saveMovie={saveMovie}
+                deleteMovie={deleteMovie}
+                beatFilms={beatFilms}
             />
-            {/*TODO: maybe change Children to SavedMovies*/}
             <ProtectedRoute
                 path='/saved-movies'
                 component={SavedMovies}
                 loggedIn={loggedIn}
+                saveMovie={saveMovie}
+                deleteMovie={deleteMovie}
+                savedFilms={savedFilms}
             />
             <ProtectedRoute
                 path='/profile'
@@ -87,10 +138,10 @@ const RouteController = ({loggedIn, location, promoteLogging, showError, setCurr
                 handleUpdateUser={handleUpdateUser}
             />
             <Route path='/signin'>
-                <Login location={location} handleLogin={handleLogin}/>
+                <Login location={currentLocation} handleLogin={handleLogin}/>
             </Route>
             <Route path='/signup'>
-                <Register location={location} handleRegister={handleRegister}/>
+                <Register location={currentLocation} handleRegister={handleRegister}/>
             </Route>
             <ProtectedRoute
                 path='*'

@@ -55,37 +55,37 @@ export const updateUserInfo = (userInfo, token) => {
         .then(response => handleResponse(response))
 }
 
-const token = localStorage.getItem('jwt');
-const authorization = `Bearer ${token}`;
+// const token = localStorage.getItem('jwt');
+// const authorization = `Bearer ${token}`;
 
-export const saveMovie = (movie) => {
+export const saveMovie = (movie, token) => {
     return fetch(`${BASE_URL}/movies`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': authorization,
+            'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify(movie)
     })
         .then(response => handleResponse(response));
 }
 
-export const deleteMovie = (movieId) => {
+export const deleteMovie = (movieId, token) => {
     return fetch(`${BASE_URL}/movies/${movieId}`, {
         method: 'DELETE',
         headers: {
-            'Authorization': authorization,
+            'Authorization': `Bearer ${token}`,
         },
     })
         .then(response => handleResponse(response));
 }
-
+const token = localStorage.getItem('jwt');
 export const getSavedMovies = () => {
     return fetch(`${BASE_URL}/movies`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': authorization
+            'Authorization': `Bearer ${token}`,
         }
     })
     .then(response => handleResponse(response));

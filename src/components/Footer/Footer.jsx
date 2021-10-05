@@ -1,9 +1,12 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import './Footer.css';
 import FooterElement from "./FooterElement";
 import {findEndPoint} from "../../utils/utils";
+import { CurrentLocationContext } from '../../contexts/CurrentLocationContext';
 
-export default function Footer({ showFooter, currentLocation }) {
+export default function Footer({ showFooter }) {
+    const currentLocation = useContext(CurrentLocationContext);
+    
     function isVisible() {
         if (findEndPoint(currentLocation) === '/profile') {
             return false;

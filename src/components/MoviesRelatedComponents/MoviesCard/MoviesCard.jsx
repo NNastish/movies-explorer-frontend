@@ -9,34 +9,7 @@ export default function MoviesCard({ film, saveMovie, deleteMovie }) {
     const [isButtonClicked, setIsButtonClicked] = useState(false);
     const [buttonClass, setButtonClass] = useState('');
     const [isYandexSource, setIsYandexSource] = useState(true);
-    // const [savedMovieId, setSavedMovieId] = useState('');
     const currentLocation = useContext(CurrentLocationContext);
-
-    // async function saveMovie(movie) {
-    //     try {
-    //         const { country, director, duration, year, description, image, trailerLink: trailer, nameRU, nameEN, id: movieId } = movie;
-    //         const imageUrl = `${BASE_URL_YANDEX}${image?.url}`
-    //         const thumbnail = `${BASE_URL_YANDEX}${image?.formats?.thumbnail?.url}`
-    //         const movieToSave = { country, director, duration, year, description, image: imageUrl, trailer, nameEN, nameRU, movieId, thumbnail };
-    //         const savedMovie = await api.saveMovie(movieToSave);
-    //         if (savedMovie) {
-    //             setSavedMovieId(savedMovie._id);
-    //         }
-    //     } catch (e) {
-    //         showError(e);
-    //     }
-    // }
-
-    // async function deleteMovie(movieId) {
-    //     try {
-    //         const deleted = await api.deleteMovie(movieId);
-    //         if (deleted) {
-    //             setSavedMovieId('');
-    //         }
-    //     } catch (e) {
-    //         showError(e);
-    //     }
-    // }
 
     const determineButtonClass = () => {
         if (isButtonClicked) {

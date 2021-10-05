@@ -5,16 +5,18 @@ import RouteController from "../RouteController";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import { useHistory, useLocation } from "react-router-dom";
-import { isHeaderFooterVisible, showError } from "../../utils/utils";
+import { isHeaderFooterVisible, showError, checkIfShouldBeUpdated } from "../../utils/utils";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import { CurrentLocationContext } from '../../contexts/CurrentLocationContext';
 import * as api from "../../utils/MainApi";
+import * as beatFilmApi from '../../utils/MoviesApi';
 
 function App() {
-    // TODO: change on false basic state
     const [loggedIn, setLoggedIn] = useState(false);
     const [headerFooterVisibility, setHeaderFooterVisibility] = useState(false);
     const [currentUser, setCurrentUser] = useState({});
+    const [beatFilms, setBeatFilms] = useState([]);
+    const [savedFilms, setSavedFilms] = useState([]);
     const currentLocation = useLocation();
     const history = useHistory();
 
@@ -35,6 +37,7 @@ function App() {
             const jwt = localStorage.getItem('jwt');
             if (jwt) {
                 const userData = await api.getUserContent(jwt);
+                delete userData.__v;
                 if (userData) {
                     promoteLogging(userData);
                 }
@@ -50,7 +53,23 @@ function App() {
 
     useEffect(() => {
         const tokenCheckStatus = tokenCheck();
-        // console.log(tokenCheckStatus);
+        const shouldBeUpdated = checkIfShouldBeUpdated();
+        if (shouldBeUpdated) {
+            Promise.all([api.getSavedMovies(), beatFilmApi.getBaseFilms()])
+            .then((response) => {
+                const savedFilmsResponse = response[0];
+                const ownedSavedFilms = savedFilmsResponse.filter(film => film.owner._id === currentUser._id);
+                setSavedFilms(ownedSavedFilms);
+                setBeatFilms(response[1]);
+                localStorage.setItem('savedFilms', JSON.stringify(ownedSavedFilms));
+                localStorage.setItem('beatFilms', JSON.stringify(response[1]));
+                localStorage.setItem('updateTime', new Date().getTime());
+            })
+            .catch(showError);
+        } else {
+            setSavedFilms(localStorage.getItem('savedFilms'));
+            setBeatFilms(localStorage.getItem('beatFilms'));
+        }
     }, [])
 
     return (
@@ -66,16 +85,17 @@ function App() {
 
                     <RouteController
                         loggedIn={loggedIn}
-                        location={currentLocation}
                         promoteLogging={promoteLogging}
                         showError={showError}
                         setCurrentUser={setCurrentUser}
                         handleExit={handleExit}
+                        savedFilms={savedFilms}
+                        beatFilms={beatFilms}
+                        setSavedFilms={setSavedFilms}
                     />
 
                     <Footer
                         showFooter={headerFooterVisibility}
-                        currentLocation={currentLocation}
                     />
                 </div>
 
