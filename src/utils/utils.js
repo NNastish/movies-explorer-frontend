@@ -60,9 +60,8 @@ function parseFilmDurationToView({ duration }) {
 
 const isLocalStorageEmpty = () => {
     const updateTime = localStorage.getItem('updateTime');
-    const savedFilms = localStorage.getItem('savedFilms');
     const beatFilms = localStorage.getItem('beatFilms');
-    return !updateTime || !savedFilms || !beatFilms; 
+    return !updateTime || !beatFilms; 
 } 
 
 const timeLocalStorageExpired = () => {

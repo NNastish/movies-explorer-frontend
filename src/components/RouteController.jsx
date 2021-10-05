@@ -84,9 +84,9 @@ const RouteController = ({loggedIn, promoteLogging, showError, setCurrentUser, h
             };
             const token = localStorage.getItem('jwt');
             const isAlreadySaved = savedFilms.some((film) => film.movieId === movieToSave.movieId);
-            console.log(isAlreadySaved);
             if (!isAlreadySaved) {
                 await api.saveMovie(movieToSave, token)
+                setSavedFilms([...savedFilms, movieToSave]);
             }
         } catch (e) {
             showError(e);

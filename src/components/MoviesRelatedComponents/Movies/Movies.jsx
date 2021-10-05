@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import SearchForm from "../SearchForm/SearchForm";
 import {useLocation} from "react-router-dom";
 import {findEndPoint, getFilmsFilteredByDuration, getFilmsFilteredByKey, showError, sleep} from "../../../utils/utils";
@@ -7,61 +7,18 @@ import MoviesViewController from "../MoviesViewController";
 import {SHORT_FILM_DURATION_LIMIT} from "../../../utils/constants";
 import * as api from '../../../utils/MainApi';
 import { BASE_URL_YANDEX } from '../../../utils/MoviesApi';
+import { useVisibleMoviesQuantity } from '../../../utils/customHooks';
 
 export default function Movies({ saveMovie, deleteMovie, beatFilms }) {
-    const [allFilms, setAllFilms] = useState([]);
     const [areFilmsQueried, setAreFilmsQueried] = useState(false);
     const [searchPhrase, setSearchPhrase] = useState('');
     const [isShortFilmRequired, setIsShortFilmRequired] = useState(false);
     const [preloaderState, setPreloaderState] = useState(false);
     const [films, setFilms] = useState([]);
     const [shortFilms, setShortFilms] = useState([]);
-    const currentLocation = useLocation();
-
-    // TODO: add check if saved in localstorage then take from there else query server.
-    // useEffect(() => {
-    //     getBaseFilms()
-    //         .then((films) => setAllFilms(films))
-    //         .catch(showError)
-    //         .finally(() => {
-    //         })
-    // }, []);
-
-    // async function saveMovie(movie) {
-    //     try {
-    //         const { country, director, duration, year, description, image, trailerLink: trailer, nameRU, nameEN, id: movieId } = movie;
-    //         const imageUrl = `${BASE_URL_YANDEX}${image?.url}`
-    //         const thumbnail = `${BASE_URL_YANDEX}${image?.formats?.thumbnail?.url}`
-    //         const movieToSave = { 
-    //             country: country ?? 'undefined', 
-    //             director: director ?? 'undefined', 
-    //             duration: duration, 
-    //             year: year ?? 'undefined', 
-    //             description: description ?? 'undefined', 
-    //             image: imageUrl, 
-    //             trailer: trailer, 
-    //             nameEN: nameEN ?? 'undefined', 
-    //             nameRU: nameRU ?? 'undefined', 
-    //             movieId: movieId, 
-    //             thumbnail: thumbnail 
-    //         };
-    //         const token = localStorage.getItem('jwt');
-    //         await api.saveMovie(movieToSave, token)
-    //     } catch (e) {
-    //         console.log(e);
-    //         showError(e);
-    //     }
-    // }
-
-    // async function deleteMovie(movieId) {
-    //     try {
-    //         const token = localStorage.getItem('jwt');
-    //         await api.deleteMovie(movieId, token);
-    //     } catch (e) {
-    //         showError(e);
-    //     }
-    // }
-
+    const [isAddAvailable, setIsAddAvailable] = useState(true);
+    const { initialQuantity, addQuantity } = useVisibleMoviesQuantity();
+    const [moviesRequiredNumber, setMoviesRequiredNumber] = useState(initialQuantity);
 
     function searchFilms(films) {
         const filteredByKey = getFilmsFilteredByKey(searchPhrase, films)
@@ -83,6 +40,24 @@ export default function Movies({ saveMovie, deleteMovie, beatFilms }) {
             })
     }, [searchPhrase])
 
+    const defineMovie = () => {
+        return isShortFilmRequired ? shortFilms : films;
+    }
+
+    const checkMovieArray = () => defineMovie() || [];
+
+    const moviesToShow = checkMovieArray().slice(0, moviesRequiredNumber);
+
+    const handleAddButton = () => {
+        console.log('add');
+        if (moviesRequiredNumber > defineMovie().length) {
+            setIsAddAvailable(false);
+        } else {
+            setMoviesRequiredNumber(moviesRequiredNumber + addQuantity);
+            setIsAddAvailable(true);
+        }
+    }
+
     return (
         <>
             <SearchForm
@@ -94,11 +69,11 @@ export default function Movies({ saveMovie, deleteMovie, beatFilms }) {
             {
                 areFilmsQueried && <MoviesViewController
                     preloaderState={preloaderState}
-                    films={films}
-                    shortFilms={shortFilms}
-                    isShortFilmsRequired={isShortFilmRequired}
+                    films={moviesToShow}
                     saveMovie={saveMovie}
                     deleteMovie={deleteMovie}
+                    changeVisibleMovies={handleAddButton}
+                    isAddAvailable={isAddAvailable}
                 />
             }
         </>

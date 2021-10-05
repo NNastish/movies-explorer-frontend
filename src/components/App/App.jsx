@@ -53,22 +53,25 @@ function App() {
 
     useEffect(() => {
         const tokenCheckStatus = tokenCheck();
+        
+        api.getSavedMovies()
+        .then(savedFilms => {
+            const ownedFilms = savedFilms.filter(film => film.owner._id === currentUser._id);
+            setSavedFilms(ownedFilms);
+        })
+
         const shouldBeUpdated = checkIfShouldBeUpdated();
         if (shouldBeUpdated) {
-            Promise.all([api.getSavedMovies(), beatFilmApi.getBaseFilms()])
+            beatFilmApi.getBaseFilms()
             .then((response) => {
-                const savedFilmsResponse = response[0];
-                const ownedSavedFilms = savedFilmsResponse.filter(film => film.owner._id === currentUser._id);
-                setSavedFilms(ownedSavedFilms);
-                setBeatFilms(response[1]);
-                localStorage.setItem('savedFilms', JSON.stringify(ownedSavedFilms));
+                setBeatFilms(response);
                 localStorage.setItem('beatFilms', JSON.stringify(response[1]));
                 localStorage.setItem('updateTime', new Date().getTime());
             })
             .catch(showError);
         } else {
-            setSavedFilms(localStorage.getItem('savedFilms'));
-            setBeatFilms(localStorage.getItem('beatFilms'));
+            const beatFilms = JSON.parse(localStorage.getItem('beatFilms'));
+            setBeatFilms(beatFilms);
         }
     }, [])
 

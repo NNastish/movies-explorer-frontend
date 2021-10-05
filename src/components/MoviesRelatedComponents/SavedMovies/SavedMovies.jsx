@@ -8,70 +8,27 @@ import MoviesViewController from "../MoviesViewController";
 import { BASE_URL_YANDEX } from '../../../utils/MoviesApi';
 import { CurrentUserContext } from '../../../contexts/CurrentUserContext';
 import { CurrentLocationContext } from '../../../contexts/CurrentLocationContext';
+import MoviesCardList from '../MoviesCardList/MoviesCardList';
 
 export default function SavedMovies({ saveMovie, deleteMovie, savedFilms }) {
-    // const [allFilms, setAllFilms] = useState([]);
     const [areFilmsQueried, setAreFilmsQueried] = useState(false);
     const [searchPhrase, setSearchPhrase] = useState('');
-    const [isShortFilmRequired, setIsShortFilmRequired] = useState(false);
+    const [isShortFilmsRequired, setIsShortFilmRequired] = useState(false);
     const [preloaderState, setPreloaderState] = useState(false);
     const [films, setFilms] = useState(savedFilms);
     const [shortFilms, setShortFilms] = useState([]);
-    const currentLocation = useContext(CurrentLocationContext);
-    const currentUser = useContext(CurrentUserContext);
+    const [moviesToShow, setMoviewToShow] = useState([]);
 
     function searchFilms(films) {
         const filteredByKey = getFilmsFilteredByKey(searchPhrase, films)
         setFilms(filteredByKey);
         const filteredByDuration = getFilmsFilteredByDuration(SHORT_FILM_DURATION_LIMIT, filteredByKey);
         setShortFilms(filteredByDuration);
+        setMoviewToShow(defineMovie());
     }
-
-    // async function saveMovie(movie) {
-    //     try {
-    //         const { country, director, duration, year, description, image, trailerLink: trailer, nameRU, nameEN, id: movieId } = movie;
-    //         const imageUrl = `${BASE_URL_YANDEX}${image?.url}`
-    //         const thumbnail = `${BASE_URL_YANDEX}${image?.formats?.thumbnail?.url}`
-    //         const movieToSave = { 
-    //             country: country ?? 'undefined', 
-    //             director: director ?? 'undefined', 
-    //             duration: duration, 
-    //             year: year ?? 'undefined', 
-    //             description: description ?? 'undefined', 
-    //             image: imageUrl, 
-    //             trailer: trailer, 
-    //             nameEN: nameEN ?? 'undefined', 
-    //             nameRU: nameRU ?? 'undefined', 
-    //             movieId: movieId, 
-    //             thumbnail: thumbnail 
-    //         };
-    //         const token = localStorage.getItem('jwt');
-    //         await api.saveMovie(movieToSave, token)
-    //     } catch (e) {
-    //         showError(e);
-    //     }
-    // }
-
-    // async function deleteMovie(movieId) {
-    //     try {
-    //         const token = localStorage.getItem('jwt');
-    //         const deleted = await api.deleteMovie(movieId, token);
-    //         if (deleted) {
-    //             const newFilms = allFilms.filter(film => film._id !== movieId);
-    //             setAllFilms(newFilms);
-    //             searchPhrase === '' ? setFilms(newFilms) : setFilms(getFilmsFilteredByKey(searchPhrase, newFilms));
-    //             const shortFilms = getFilmsFilteredByDuration(SHORT_FILM_DURATION_LIMIT, films);
-    //             setShortFilms(shortFilms);
-    //         }
-    //     } catch (e) {
-    //         showError(e);
-    //     }
-    // }
 
     useEffect(() => {
         setPreloaderState(true);
-        // setFilms(all);
-        // setShortFilms(getFilmsFilteredByDuration(SHORT_FILM_DURATION_LIMIT, allFilms));
         sleep(1500)
             .then(() => {
                 searchFilms(savedFilms)
@@ -82,46 +39,27 @@ export default function SavedMovies({ saveMovie, deleteMovie, savedFilms }) {
     }, [searchPhrase]);
 
     useEffect(() => {
+        setFilms(savedFilms);
         const filteredByDuration = getFilmsFilteredByDuration(SHORT_FILM_DURATION_LIMIT, savedFilms);
         setShortFilms(filteredByDuration);
+        setMoviewToShow(savedFilms);
     }, [])
 
-    // useEffect(() => {
-    //     const token = localStorage.getItem('jwt');
-    //     api.getSavedMovies(token)
-    //         .then((movies) => {
-    //             // console.log(currentUser);
-    //             const owningFilms = movies.filter((film) => film.owner._id === currentUser._id);
-    //             setAllFilms(owningFilms);
-    //             setFilms(owningFilms);
-    //             const filtered = getFilmsFilteredByDuration(SHORT_FILM_DURATION_LIMIT, owningFilms);
-    //             setShortFilms(filtered);
-    //             console.log('owning', owningFilms);
-    //             console.log('all', allFilms);
-    //             console.log('full', films);
-    //             console.log('short', shortFilms);
-    //         })
-    //         .catch(showError)
-    //         .finally(() => {
-    //         })
-    // }, [currentLocation])
+    const defineMovie = () => isShortFilmsRequired ? shortFilms : films;
 
     return (
         <>
             <SearchForm
                 handleSearchPhraseChange={setSearchPhrase}
                 handleFilterChange={setIsShortFilmRequired}
-                isFilterOn={isShortFilmRequired}
+                isFilterOn={isShortFilmsRequired}
                 setIsSearched={setAreFilmsQueried}
             />
             <MoviesViewController
                     preloaderState={preloaderState}
-                    films={savedFilms}
-                    shortFilms={shortFilms}
-                    isShortFilmsRequired={isShortFilmRequired}
-                    saveMovie={saveMovie}
+                    films={moviesToShow}
                     deleteMovie={deleteMovie}
-                />
+            />
         </>
     )
 }
