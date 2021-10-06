@@ -1,65 +1,66 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from 'react';
 
-//хук управления формой и валидации формы
+// хук управления формой и валидации формы
 export function useFormWithValidation() {
-    const [values, setValues] = React.useState({});
-    const [errors, setErrors] = React.useState({});
-    const [isValid, setIsValid] = React.useState(false);
-  
-    const handleChange = (event) => {
-      const target = event.target;
-      const name = target.name;
-      const value = target.value;
-      setValues({...values, [name]: value});
-      setErrors({...errors, [name]: target.validationMessage });
-      setIsValid(target.closest("form").checkValidity());
-    };
-  
-    const resetForm = React.useCallback(
-      (newValues = {}, newErrors = {}, newIsValid = false) => {
-        setValues(newValues);
-        setErrors(newErrors);
-        setIsValid(newIsValid);
-      },
-      [setValues, setErrors, setIsValid]
-    );
-  
-    return { values, handleChange, errors, isValid, resetForm };
+  const [values, setValues] = React.useState({});
+  const [errors, setErrors] = React.useState({});
+  const [isValid, setIsValid] = React.useState(false);
+
+  const handleChange = (event) => {
+    const { target } = event;
+    const { name } = target;
+    const { value } = target;
+    setValues({ ...values, [name]: value });
+    setErrors({ ...errors, [name]: target.validationMessage });
+    setIsValid(target.closest('form').checkValidity());
+  };
+
+  const resetForm = React.useCallback(
+    (newValues = {}, newErrors = {}, newIsValid = false) => {
+      setValues(newValues);
+      setErrors(newErrors);
+      setIsValid(newIsValid);
+    },
+    [setValues, setErrors, setIsValid],
+  );
+
+  return {
+    values, handleChange, errors, isValid, resetForm,
+  };
+}
+
+function defineQuantityParams(windowWidth) {
+  if (windowWidth <= 480) {
+    return { initialQuantity: 5, addQuantity: 2 };
+  } if (windowWidth <= 768) {
+    return { initialQuantity: 8, addQuantity: 2 };
   }
+  return { initialQuantity: 12, addQuantity: 3 };
+}
 
-  function defineQuantityParams(windowWidth) {
-      if (windowWidth <= 480) {
-          return {initialQuantity: 5, addQuantity: 2}
-      } else if (windowWidth <= 768) {
-          return {initialQuantity: 8, addQuantity: 2}
-      } else {
-          return {initialQuantity: 12, addQuantity: 3}
-      }
-  } 
+export function useWindowWidth() {
+  const [windowWidth, setWindowWidth] = useState(undefined);
 
-  //хук управления количеством фильмов на экране
-  export function useVisibleMoviesQuantity() {
-    const windowWidth = useWindowWidth();
+  useEffect(() => {
+    function handleResize() {
+      setWindowWidth(window.innerWidth);
+    }
 
-    const quantityParams = useMemo(() => defineQuantityParams(windowWidth), [windowWidth])
+    window.addEventListener('resize', handleResize);
 
-    return quantityParams;  
-  }
+    handleResize();
 
-  export function useWindowWidth() {
-      const [windowWidth, setWindowWidth] = useState(undefined);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
-      useEffect(() => {
-          function handleResize() {
-              setWindowWidth(window.innerWidth);
-          }
+  return windowWidth;
+}
 
-          window.addEventListener('resize', handleResize);
+// хук управления количеством фильмов на экране
+export function useVisibleMoviesQuantity() {
+  const windowWidth = useWindowWidth();
 
-          handleResize();
+  const quantityParams = useMemo(() => defineQuantityParams(windowWidth), [windowWidth]);
 
-          return () => window.removeEventListener('resize', handleResize);
-      }, []);
-
-      return windowWidth;
-  }
+  return quantityParams;
+}
