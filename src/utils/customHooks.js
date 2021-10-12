@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { defineMovieQuantityParams } from './utils';
 
 // хук управления формой и валидации формы
 export function useFormWithValidation() {
@@ -29,14 +30,7 @@ export function useFormWithValidation() {
   };
 }
 
-function defineQuantityParams(windowWidth) {
-  if (windowWidth <= 480) {
-    return { initialQuantity: 5, addQuantity: 2 };
-  } if (windowWidth <= 768) {
-    return { initialQuantity: 8, addQuantity: 2 };
-  }
-  return { initialQuantity: 12, addQuantity: 3 };
-}
+
 
 export function useWindowWidth() {
   const [windowWidth, setWindowWidth] = useState(undefined);
@@ -60,7 +54,7 @@ export function useWindowWidth() {
 export function useVisibleMoviesQuantity() {
   const windowWidth = useWindowWidth();
 
-  const quantityParams = useMemo(() => defineQuantityParams(windowWidth), [windowWidth]);
+  const quantityParams = useMemo(() => defineMovieQuantityParams({ windowWidth }), [windowWidth]);
 
   return quantityParams;
 }

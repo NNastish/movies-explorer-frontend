@@ -4,7 +4,7 @@ import Message from '../../Message/Message';
 import {
   getFilmsFilteredByDuration, getFilmsFilteredByKey, sleep,
 } from '../../../utils/utils';
-import MoviesViewController from '../MoviesViewController';
+import MoviesView from '../MoviesView';
 import { SHORT_FILM_DURATION_LIMIT, NOT_FOUND_TEXT, REQUEST_ERROR } from '../../../utils/constants';
 import { useVisibleMoviesQuantity } from '../../../utils/customHooks';
 import Preloader from '../Preloader/Preloader';
@@ -23,7 +23,7 @@ export default function Movies({
       {isLoading ? <Preloader /> : null}
       {isNotFound ? <Message text={NOT_FOUND_TEXT} isError={false} /> : null}
       {isErrorHappened ? <Message text={REQUEST_ERROR} isError={true} /> : null}
-      <MoviesCardList
+      <MoviesView
         isSavedRoute={false}
         movies={movies}
         saveMovie={saveMovie}

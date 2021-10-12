@@ -27,6 +27,16 @@ const defineIsMovieLiked = (card, savedMoviesId) => {
   }
 };
 
+const defineMovieQuantityParams = ({ windowWidth }) => {
+  if (windowWidth <= 480) {
+    return { initialQuantity: 5, addQuantity: 2 };
+  }
+  if (windowWidth <= 768) {
+    return { initialQuantity: 8, addQuantity: 2 };
+  }
+  return { initialQuantity: 12, addQuantity: 3 };
+};
+
 const showError = (error) => {
   alert(`Error: ${error}`);
 };
@@ -83,4 +93,5 @@ export {
   getFilmsFilteredByDuration, getFilmsFilteredByKey,
   parseFilmDurationToView, showError, checkIfShouldBeUpdated,
   defineImageLink, defineIsMovieLiked, defineTrailerLink,
+  defineMovieQuantityParams,
 };
