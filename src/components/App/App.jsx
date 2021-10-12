@@ -23,7 +23,7 @@ function App() {
   function promoteLogging(userData) {
     setCurrentUser(userData);
     setLoggedIn(true);
-    history.push('/movies');
+    // history.push('/movies');
   }
 
   function handleExit() {
@@ -54,25 +54,25 @@ function App() {
   useEffect(() => {
     tokenCheck();
 
-    api.getSavedMovies()
-      .then((saved) => {
-        const ownedFilms = saved.filter((film) => film.owner._id === currentUser._id);
-        setSavedFilms(ownedFilms);
-      });
+    // api.getSavedMovies()
+    //   .then((saved) => {
+    //     const ownedFilms = saved.filter((film) => film.owner._id === currentUser._id);
+    //     setSavedFilms(ownedFilms);
+    //   });
 
-    const shouldBeUpdated = checkIfShouldBeUpdated();
-    if (shouldBeUpdated) {
-      beatFilmApi.getBaseFilms()
-        .then((response) => {
-          setBeatFilms(response);
-          localStorage.setItem('beatFilms', JSON.stringify(response));
-          localStorage.setItem('updateTime', new Date().getTime());
-        })
-        .catch(showError);
-    } else {
-      const cachedFilms = JSON.parse(localStorage.getItem('beatFilms'));
-      setBeatFilms(cachedFilms);
-    }
+    // const shouldBeUpdated = checkIfShouldBeUpdated();
+    // if (shouldBeUpdated) {
+    //   beatFilmApi.getBaseFilms()
+    //     .then((response) => {
+    //       setBeatFilms(response);
+    //       localStorage.setItem('beatFilms', JSON.stringify(response));
+    //       localStorage.setItem('updateTime', new Date().getTime());
+    //     })
+    //     .catch(showError);
+    // } else {
+    //   const cachedFilms = JSON.parse(localStorage.getItem('beatFilms'));
+    //   setBeatFilms(cachedFilms);
+    // }
   }, []);
 
   return (

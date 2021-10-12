@@ -11,6 +11,7 @@ import Register from './Authorization/Register';
 import NotFound from './NotFound/NotFound';
 import Movies from './MoviesRelatedComponents/Movies/Movies';
 import SavedMovies from './MoviesRelatedComponents/SavedMovies/SavedMovies';
+import MovieController from './MoviesRelatedComponents/MovieController';
 import ProtectedRoute from './ProtectedRoute';
 import * as api from '../utils/MainApi';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
@@ -21,7 +22,6 @@ const RouteController = ({
   loggedIn, promoteLogging, showError, setCurrentUser,
   handleExit, savedFilms, beatFilms, setSavedFilms,
 }) => {
-  const currentUser = useContext(CurrentUserContext);
   const validation = useFormWithValidation();
 
   async function handleLogin(login) {
@@ -63,51 +63,51 @@ const RouteController = ({
     }
   }
 
-  async function saveMovie(movie) {
-    try {
-      const {
-        country, director, duration, year,
-        description, image, trailerLink: trailer,
-        nameRU, nameEN, id: movieId,
-      } = movie;
-      const imageUrl = `${BASE_URL_YANDEX}${image?.url}`;
-      const thumbnail = `${BASE_URL_YANDEX}${image?.formats?.thumbnail?.url}`;
-      const movieToSave = {
-        country: country ?? 'undefined',
-        director: director ?? 'undefined',
-        duration,
-        year: year ?? 'undefined',
-        description: description ?? 'undefined',
-        image: imageUrl,
-        trailer,
-        nameEN: nameEN ?? 'undefined',
-        nameRU: nameRU ?? 'undefined',
-        movieId,
-        thumbnail,
-      };
-      const token = localStorage.getItem('jwt');
-      const isAlreadySaved = savedFilms.some((film) => film.movieId === movieToSave.movieId);
-      if (!isAlreadySaved) {
-        await api.saveMovie(movieToSave, token);
-        setSavedFilms([...savedFilms, movieToSave]);
-      }
-    } catch (e) {
-      showError(e);
-    }
-  }
+  // async function saveMovie(movie) {
+  //   try {
+  //     const {
+  //       country, director, duration, year,
+  //       description, image, trailerLink: trailer,
+  //       nameRU, nameEN, id: movieId,
+  //     } = movie;
+  //     const imageUrl = `${BASE_URL_YANDEX}${image?.url}`;
+  //     const thumbnail = `${BASE_URL_YANDEX}${image?.formats?.thumbnail?.url}`;
+  //     const movieToSave = {
+  //       country: country ?? 'undefined',
+  //       director: director ?? 'undefined',
+  //       duration,
+  //       year: year ?? 'undefined',
+  //       description: description ?? 'undefined',
+  //       image: imageUrl,
+  //       trailer,
+  //       nameEN: nameEN ?? 'undefined',
+  //       nameRU: nameRU ?? 'undefined',
+  //       movieId,
+  //       thumbnail,
+  //     };
+  //     const token = localStorage.getItem('jwt');
+  //     const isAlreadySaved = savedFilms.some((film) => film.movieId === movieToSave.movieId);
+  //     if (!isAlreadySaved) {
+  //       await api.saveMovie(movieToSave, token);
+  //       setSavedFilms([...savedFilms, movieToSave]);
+  //     }
+  //   } catch (e) {
+  //     showError(e);
+  //   }
+  // }
 
-  async function deleteMovie(movieId) {
-    try {
-      const token = localStorage.getItem('jwt');
-      const deleted = await api.deleteMovie(movieId, token);
-      if (deleted) {
-        const newFilms = savedFilms.filter((film) => film._id !== movieId);
-        setSavedFilms(newFilms);
-      }
-    } catch (e) {
-      showError(e);
-    }
-  }
+  // async function deleteMovie(movieId) {
+  //   try {
+  //     const token = localStorage.getItem('jwt');
+  //     const deleted = await api.deleteMovie(movieId, token);
+  //     if (deleted) {
+  //       const newFilms = savedFilms.filter((film) => film._id !== movieId);
+  //       setSavedFilms(newFilms);
+  //     }
+  //   } catch (e) {
+  //     showError(e);
+  //   }
+  // }
 
   return (
     <Switch>
@@ -120,27 +120,33 @@ const RouteController = ({
       </Route>
       <ProtectedRoute
         path="/movies"
-        component={Movies}
         loggedIn={loggedIn}
-        saveMovie={saveMovie}
-        deleteMovie={deleteMovie}
-        beatFilms={beatFilms}
+        component={MovieController}
+        // component={Movies}
+        // saveMovie={saveMovie}
+        // deleteMovie={deleteMovie}
+        // beatFilms={beatFilms}
       />
       <ProtectedRoute
         path="/saved-movies"
-        component={SavedMovies}
         loggedIn={loggedIn}
-        deleteMovie={deleteMovie}
-        savedFilms={savedFilms}
+        component={MovieController}
+        // component={SavedMovies}
+        // deleteMovie={deleteMovie}
+        // savedFilms={savedFilms}
       />
       <ProtectedRoute
         path="/profile"
         component={Profile}
         loggedIn={loggedIn}
-        currentUser={currentUser}
         handleExit={handleExit}
         handleUpdateUser={handleUpdateUser}
         validation={validation}
+      />
+      <ProtectedRoute
+        path="*"
+        component={NotFound}
+        loggedIn={loggedIn}
       />
       <Route path="/signin">
         <Login
@@ -154,11 +160,6 @@ const RouteController = ({
           validation={validation}
         />
       </Route>
-      <ProtectedRoute
-        path="*"
-        component={NotFound}
-        loggedIn={loggedIn}
-      />
     </Switch>
   );
 };

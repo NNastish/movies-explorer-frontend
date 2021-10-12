@@ -1,6 +1,6 @@
 /* eslint-disable consistent-return */
 /* eslint-disable array-callback-return */
-import { FOOTER_HEADER_ENDPOINTS, HOURS_BETWEEN_LOCALSTORAGE_UPDATE, YANDEX_API_URL } from './constants';
+import { FOOTER_HEADER_ENDPOINTS, HOURS_BETWEEN_LOCALSTORAGE_UPDATE, SHORT_FILM_DURATION_LIMIT, YANDEX_API_URL } from './constants';
 
 const findEndPoint = (currentLocation) => {
   const pathName = currentLocation.pathname;
@@ -45,30 +45,47 @@ const defineMovieQuantityParams = ({ windowWidth }) => {
 };
 
 const showError = (error) => {
-  alert(`Error: ${error}`);
+  console.error(`Error: ${error}`);
 };
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 function getFilmsFilteredByKey(key, films) {
-  if (!films || !key.length) {
-    return;
+  // if (!films || !key.length) {
+  //   return;
+  // }
+  // return films.filter((film) => {
+  //   const hasKeyInRussianName = film?.nameRU && film?.nameRU.includes(key);
+  //   const hasKeyInEnglishName = film?.nameEN && film?.nameEN.includes(key);
+  //   const hasKeyInDescription = film?.description.includes(key);
+  //   if (hasKeyInDescription || hasKeyInEnglishName || hasKeyInRussianName) {
+  //     return film;
+  //   }
+  // });
+  if (films.length) {
+    return films.filter((movie) => movie.nameRU.toLowerCase().includes(key.toLowerCase()));
   }
-  return films.filter((film) => {
-    const hasKeyInRussianName = film?.nameRU && film?.nameRU.includes(key);
-    const hasKeyInEnglishName = film?.nameEN && film?.nameEN.includes(key);
-    const hasKeyInDescription = film?.description.includes(key);
-    if (hasKeyInDescription || hasKeyInEnglishName || hasKeyInRussianName) {
-      return film;
-    }
-  });
+  return [];
 }
 
-function getFilmsFilteredByDuration(timeLimit, filmFilteredByKey) {
-  if (!filmFilteredByKey) {
-    return;
+// function getFilmsFilteredByDuration(timeLimit, filmFilteredByKey) {
+//   if (!filmFilteredByKey) {
+//     return;
+//   }
+//   return filmFilteredByKey.filter((film) => film.duration <= timeLimit);
+// }
+function getFilmsFilteredByDuration({ movies, areShort}) {
+  if (movies.length) {
+    return movies.filter((movie) => {
+      if (areShort) {
+        if (movie.duration < SHORT_FILM_DURATION_LIMIT) {
+          return true;
+        }
+      }
+      return true;
+    });
   }
-  return filmFilteredByKey.filter((film) => film.duration <= timeLimit);
+  return [];
 }
 
 function parseFilmDurationToView({ duration }) {

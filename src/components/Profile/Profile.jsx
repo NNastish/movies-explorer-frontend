@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import './Profile.css';
 import FormField from '../Authorization/FormField';
+import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 
 export default function Profile({
-  currentUser, handleUpdateUser, handleExit, validation,
+  handleUpdateUser, handleExit, validation,
 }) {
+  const currentUser = useContext(CurrentUserContext);
+
   const updateUser = (e) => {
     e.preventDefault();
     handleUpdateUser(validation.values);

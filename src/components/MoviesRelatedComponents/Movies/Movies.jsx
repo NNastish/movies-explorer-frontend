@@ -7,7 +7,7 @@ import Preloader from '../Preloader/Preloader';
 
 export default function Movies({
   isLoading, isNotFound, isErrorHappened, submitSearch, handleToggleChange,
-  movies, savedMoviesId, saveMovie, deleteMovie,
+  movies, savedMoviesId, saveMovie, deleteMovie, isSavedRoute,
 }) {
   return (
     <section className="movies-card">
@@ -19,7 +19,7 @@ export default function Movies({
       {isNotFound ? <Message text={NOT_FOUND_TEXT} isError={false} /> : null}
       {isErrorHappened ? <Message text={REQUEST_ERROR} isError={true} /> : null}
       <MoviesView
-        isSavedRoute={false}
+        isSavedRoute={isSavedRoute}
         movies={movies}
         saveMovie={saveMovie}
         deleteMovie={deleteMovie}
