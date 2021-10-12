@@ -2,15 +2,15 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { defineMovieQuantityParams } from './utils';
 
 // хук управления формой и валидации формы
-export function useFormWithValidation() {
-  const [values, setValues] = React.useState({});
+export function useFormWithValidation(input) {
+  const [values, setValues] = React.useState(input);
   const [errors, setErrors] = React.useState({});
   const [isValid, setIsValid] = React.useState(false);
 
   const handleChange = (event) => {
-    const { target } = event;
-    const { name } = target;
-    const { value } = target;
+    const { target } = event.target;
+    const { name } = target.name;
+    const { value } = target.value;
     setValues({ ...values, [name]: value });
     setErrors({ ...errors, [name]: target.validationMessage });
     setIsValid(target.closest('form').checkValidity());
@@ -29,8 +29,6 @@ export function useFormWithValidation() {
     values, handleChange, errors, isValid, resetForm,
   };
 }
-
-
 
 export function useWindowWidth() {
   const [windowWidth, setWindowWidth] = useState(undefined);
@@ -54,7 +52,9 @@ export function useWindowWidth() {
 export function useVisibleMoviesQuantity() {
   const windowWidth = useWindowWidth();
 
-  const quantityParams = useMemo(() => defineMovieQuantityParams({ windowWidth }), [windowWidth]);
+  const { initialQuantity, addQuantity } = useMemo(
+    () => defineMovieQuantityParams({ windowWidth }), [windowWidth],
+  );
 
-  return quantityParams;
+  return { initialQuantity, addQuantity };
 }

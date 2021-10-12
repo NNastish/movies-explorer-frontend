@@ -21,11 +21,13 @@ const SERVER_API_URL = 'https://movies-explorer-api.nomoredomains.monster';
 
 const NOT_FOUND_TEXT = 'Ничего не найдено';
 
+const MOVIES_EMPTY = 'MoviesEmpty';
+
 const REQUEST_ERROR = 'Во время вашего запроса случилась ошибка. Попробуйте перезагрузить страницу или повторить действие позднее.';
 
 export {
   FOOTER_HEADER_ENDPOINTS, CLARIFY_LOGIN,
   CLARIFY_REGISTER, SHORT_FILM_DURATION_LIMIT,
   HOURS_BETWEEN_LOCALSTORAGE_UPDATE, YANDEX_API_URL, SERVER_API_URL,
-  NOT_FOUND_TEXT, REQUEST_ERROR,
+  NOT_FOUND_TEXT, REQUEST_ERROR, MOVIES_EMPTY,
 };

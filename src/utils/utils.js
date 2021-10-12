@@ -17,6 +17,13 @@ const isHeaderFooterVisible = (currentLocation, setVisibility) => {
   }
 };
 
+const compareIfBasicArrayBigger = ({ basicLength, comparableLength }) => {
+  if (basicLength) {
+    return basicLength > comparableLength;
+  }
+  return false;
+};
+
 const defineImageLink = (isSavedRoute, film) => (isSavedRoute ? film?.image : `${YANDEX_API_URL}${film?.image?.url}`);
 
 const defineTrailerLink = ({ trailer }) => (trailer || 'https://youtube.com');
@@ -93,5 +100,5 @@ export {
   getFilmsFilteredByDuration, getFilmsFilteredByKey,
   parseFilmDurationToView, showError, checkIfShouldBeUpdated,
   defineImageLink, defineIsMovieLiked, defineTrailerLink,
-  defineMovieQuantityParams,
+  defineMovieQuantityParams, compareIfBasicArrayBigger,
 };

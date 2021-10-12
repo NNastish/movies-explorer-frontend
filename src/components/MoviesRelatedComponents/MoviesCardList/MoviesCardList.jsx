@@ -2,19 +2,21 @@ import React from 'react';
 import './MoviesCardList.css';
 import MoviesCard from '../MoviesCard/MoviesCard';
 
-export default function MoviesCardList({ films, saveMovie, deleteMovie }) {
+export default function MoviesCardList({
+  isEmpty, visibleMovies, saveMovie, deleteMovie, savedMoviesId, isSavedRoute,
+}) {
   return (
     <div className="movies-card__list">
-      {
-                films.map((movie) => (
-                  <MoviesCard
-                    key={movie.id || movie.movieId}
-                    film={movie}
-                    saveMovie={saveMovie}
-                    deleteMovie={deleteMovie}
-                  />
-                ))
-            }
+      {isEmpty ? '' : visibleMovies.map((movie) => (
+        <MoviesCard
+          key={isSavedRoute ? movie._id : movie.id}
+          isSavedRoute={isSavedRoute}
+          film={movie}
+          saveMovie={saveMovie}
+          deleteMovie={deleteMovie}
+          savedMoviesId={savedMoviesId}
+        />
+      ))}
     </div>
   );
 }

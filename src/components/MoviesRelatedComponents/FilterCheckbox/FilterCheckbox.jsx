@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import './FilterCheckbox.css';
 
-export default function FilterCheckbox({ filterText, handleChange, isFilterOn }) {
+export default function FilterCheckbox({ filterText, handleToggleChange }) {
+  const checker = useRef();
+
   function changeFilterStatus() {
-    handleChange(!isFilterOn);
+    handleToggleChange(checker.current.checked);
   }
 
   return (
@@ -13,7 +15,7 @@ export default function FilterCheckbox({ filterText, handleChange, isFilterOn })
           <input
             type="checkbox"
             className="filter__input"
-            checked={isFilterOn}
+            ref={checker}
             onChange={changeFilterStatus}
           />
           <span className="filter__span" />

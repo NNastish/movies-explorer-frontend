@@ -1,38 +1,50 @@
-import React, { useRef } from 'react';
+import React, { useState } from 'react';
 import './SearchForm.css';
 import search from '../../../images/search.svg';
 import FilterCheckbox from '../FilterCheckbox/FilterCheckbox';
+import { useFormWithValidation } from '../../../utils/customHooks';
 
 export default function SearchForm({
-  handleSearchPhraseChange, handleFilterChange, isFilterOn, setIsSearched,
+  submitSearch, handleToggleChange,
 }) {
-  const inputRef = useRef();
+  const { error, setError } = useState('');
+  const {
+    values, errors, isValid, handleChange,
+  } = useFormWithValidation({ query: '' });
 
-  function handleSearchRequest(e) {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    handleSearchPhraseChange(inputRef?.current?.value);
-    setIsSearched(true);
-    inputRef.current.value = '';
-  }
+    if (isValid) {
+      setError('');
+      submitSearch(values.query);
+    } else if (values.query.length > 0) {
+      setError(errors.query);
+    } else {
+      setError('Введите поисковый запрос.');
+    }
+  };
 
   return (
     <section className="search">
       <div className="search__container">
-        <form className="search__form">
+        <form className="search__form" onSubmit={handleSubmit}>
           <div className="search__box">
             <img src={search} alt="Поиск" className="search__icon" />
             <input
               placeholder="Фильм"
               className="search__input"
-              ref={inputRef}
+              value={values.key}
+              onChange={handleChange}
+              minLength="1"
+              maxLength="30"
               required
             />
-            <button type="submit" className="search__button" onClick={handleSearchRequest} />
+            <button type="submit" className="search__button" />
+            <span className="search__query-error">{error}</span>
           </div>
           <FilterCheckbox
             filterText="Короткометражки"
-            handleChange={handleFilterChange}
-            isFilterOn={isFilterOn}
+            handleToggleChange={handleToggleChange}
           />
         </form>
       </div>

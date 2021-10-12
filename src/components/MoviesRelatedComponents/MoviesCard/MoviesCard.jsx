@@ -5,7 +5,9 @@ import {
   defineIsMovieLiked, defineTrailerLink,
 } from '../../../utils/utils';
 
-export default function MoviesCard({ isSavedRoute, film, saveMovie, deleteMovie, savedMoviesId }) {
+export default function MoviesCard({
+  isSavedRoute, film, saveMovie, deleteMovie, savedMoviesId,
+}) {
   const movieImageLink = defineImageLink(isSavedRoute, film);
   const movieTrailerLink = defineTrailerLink({ trailer: film.trailerLink });
   const movieDuration = parseFilmDurationToView(film);
