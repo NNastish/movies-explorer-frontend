@@ -1,74 +1,43 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React from 'react';
 import './MoviesCard.css';
-import { findEndPoint, parseFilmDurationToView } from '../../../utils/utils';
-import { BASE_URL_YANDEX } from '../../../utils/MoviesApi';
-import { CurrentLocationContext } from '../../../contexts/CurrentLocationContext';
+import {
+  parseFilmDurationToView, defineImageLink,
+  defineIsMovieLiked, defineTrailerLink,
+} from '../../../utils/utils';
 
-export default function MoviesCard({ film, saveMovie, deleteMovie }) {
-  const [isButtonClicked, setIsButtonClicked] = useState(false);
-  const [buttonClass, setButtonClass] = useState('');
-  const [isYandexSource, setIsYandexSource] = useState(true);
-  const currentLocation = useContext(CurrentLocationContext);
-
-  const determineButtonClass = () => {
-    if (isButtonClicked) {
-      return 'movies__button';
-    }
-    return 'movies__button-add';
-  };
-
-  const changeButtonState = () => {
-    setIsButtonClicked(!isButtonClicked);
-    if (isYandexSource) {
-      setButtonClass(determineButtonClass());
-    }
-  };
-
-  const isSave = () => isYandexSource && !isButtonClicked;
-
-  const isButtonNameVisible = () => (isSave() ? 'Сохранить' : '');
-
-  const makeAction = (isSavingAction, movie) => {
-    if (isSavingAction) {
-      saveMovie(movie);
-    } else {
-      deleteMovie(movie._id);
-    }
-  };
+export default function MoviesCard({ isSavedRoute, film, saveMovie, deleteMovie, savedMoviesId }) {
+  const movieImageLink = defineImageLink(isSavedRoute, film);
+  const movieTrailerLink = defineTrailerLink({ trailer: film.trailerLink });
+  const movieDuration = parseFilmDurationToView(film);
+  const isMovieLiked = defineIsMovieLiked(film, savedMoviesId);
+  const movieButtonClassMoviesRoute = isMovieLiked ? 'movies__button' : 'movies__button-add';
+  const movieButtonClass = isSavedRoute ? 'movies__button-delete' : movieButtonClassMoviesRoute;
+  const tumbler = isSavedRoute || isMovieLiked;
+  const movieButtonText = tumbler ? '' : 'Сохранить';
 
   const handleClick = () => {
-    makeAction(isSave(), film);
-    changeButtonState();
-  };
-
-  const defineImageLink = () => (isYandexSource ? `${BASE_URL_YANDEX}${film?.image?.url}` : film?.image);
-
-  useEffect(() => {
-    const endPoint = findEndPoint(currentLocation);
-    if (endPoint === '/movies') {
-      setIsYandexSource(true);
-      setButtonClass('movies__button');
+    if (tumbler) {
+      deleteMovie(film);
     } else {
-      setIsYandexSource(false);
-      setButtonClass('movies__button-delete');
+      saveMovie(film);
     }
-  }, [currentLocation]);
+  };
 
   return (
     <div className="movies">
       <div className="movies__info">
         <h1 className="movies__title">{film.nameRU}</h1>
-        <p className="movies__time">{parseFilmDurationToView(film)}</p>
+        <p className="movies__time">{movieDuration}</p>
         <button
-          className={buttonClass}
+          className={movieButtonClass}
           onClick={handleClick}
           type="button"
         >
-          {isYandexSource && isButtonNameVisible()}
+          {movieButtonText}
         </button>
       </div>
-      <a target="_blank" href={film.trailerLink} rel="noreferrer">
-        <img className="movies__image" alt="Фильм" src={defineImageLink()} />
+      <a target="_blank" href={movieTrailerLink} rel="noreferrer">
+        <img className="movies__image" alt={film.nameRU} src={movieImageLink} />
       </a>
     </div>
   );

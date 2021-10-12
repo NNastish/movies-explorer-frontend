@@ -1,6 +1,6 @@
 /* eslint-disable consistent-return */
 /* eslint-disable array-callback-return */
-import { FOOTER_HEADER_ENDPOINTS, HOURS_BETWEEN_LOCALSTORAGE_UPDATE } from './constants';
+import { FOOTER_HEADER_ENDPOINTS, HOURS_BETWEEN_LOCALSTORAGE_UPDATE, YANDEX_API_URL } from './constants';
 
 const findEndPoint = (currentLocation) => {
   const pathName = currentLocation.pathname;
@@ -14,6 +14,16 @@ const isHeaderFooterVisible = (currentLocation, setVisibility) => {
     setVisibility(true);
   } else {
     setVisibility(false);
+  }
+};
+
+const defineImageLink = (isSavedRoute, film) => (isSavedRoute ? film?.image : `${YANDEX_API_URL}${film?.image?.url}`);
+
+const defineTrailerLink = ({ trailer }) => (trailer || 'https://youtube.com');
+
+const defineIsMovieLiked = (card, savedMoviesId) => {
+  if (card.id) {
+    return savedMoviesId.some((element) => element === card.id);
   }
 };
 
@@ -72,4 +82,5 @@ export {
   isHeaderFooterVisible, findEndPoint, sleep,
   getFilmsFilteredByDuration, getFilmsFilteredByKey,
   parseFilmDurationToView, showError, checkIfShouldBeUpdated,
+  defineImageLink, defineIsMovieLiked, defineTrailerLink,
 };

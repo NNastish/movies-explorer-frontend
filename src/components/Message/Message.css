@@ -1,0 +1,7 @@
+.message__error {
+    color: rgba(255, 64, 98, 1);
+}
+
+.message__info {
+    color: #000;
+}

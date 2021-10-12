@@ -1,12 +1,12 @@
 // our api
-const BASE_URL = 'https://movies-explorer-api.nomoredomains.monster';
+import { SERVER_API_URL } from './constants';
 
 // eslint-disable-next-line prefer-promise-reject-errors
 const handleResponse = (response) => (response.ok ? response.json() : Promise.reject(`Ошибка: ${response.status}`));
 
 export const register = (registration) => {
   const { name, email, password } = registration;
-  return fetch(`${BASE_URL}/signup`, {
+  return fetch(`${SERVER_API_URL}/signup`, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
@@ -23,7 +23,7 @@ export const register = (registration) => {
 
 export const login = (loginInfo) => {
   const { email, password } = loginInfo;
-  return fetch(`${BASE_URL}/signin`, {
+  return fetch(`${SERVER_API_URL}/signin`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ export const login = (loginInfo) => {
     .then((response) => handleResponse(response));
 };
 
-export const getUserContent = (token) => fetch(`${BASE_URL}/users/me`, {
+export const getUserContent = (token) => fetch(`${SERVER_API_URL}/users/me`, {
   method: 'GET',
   headers: {
     'Content-Type': 'application/json',
@@ -42,7 +42,7 @@ export const getUserContent = (token) => fetch(`${BASE_URL}/users/me`, {
 })
   .then((response) => handleResponse(response));
 
-export const updateUserInfo = (userInfo, token) => fetch(`${BASE_URL}/users/me`, {
+export const updateUserInfo = (userInfo, token) => fetch(`${SERVER_API_URL}/users/me`, {
   method: 'PATCH',
   headers: {
     'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ export const updateUserInfo = (userInfo, token) => fetch(`${BASE_URL}/users/me`,
 // const token = localStorage.getItem('jwt');
 // const authorization = `Bearer ${token}`;
 
-export const saveMovie = (movie, token) => fetch(`${BASE_URL}/movies`, {
+export const saveMovie = (movie, token) => fetch(`${SERVER_API_URL}/movies`, {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -65,7 +65,7 @@ export const saveMovie = (movie, token) => fetch(`${BASE_URL}/movies`, {
 })
   .then((response) => handleResponse(response));
 
-export const deleteMovie = (movieId, token) => fetch(`${BASE_URL}/movies/${movieId}`, {
+export const deleteMovie = (movieId, token) => fetch(`${SERVER_API_URL}/movies/${movieId}`, {
   method: 'DELETE',
   headers: {
     Authorization: `Bearer ${token}`,
@@ -73,7 +73,7 @@ export const deleteMovie = (movieId, token) => fetch(`${BASE_URL}/movies/${movie
 })
   .then((response) => handleResponse(response));
 const token = localStorage.getItem('jwt');
-export const getSavedMovies = () => fetch(`${BASE_URL}/movies`, {
+export const getSavedMovies = () => fetch(`${SERVER_API_URL}/movies`, {
   method: 'GET',
   headers: {
     'Content-Type': 'application/json',

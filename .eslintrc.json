@@ -21,6 +21,7 @@
         "no-underscore-dangle": "off",
         "react/jsx-no-bind": "off",
         "react/jsx-props-no-spreading": "off",
+        "react/jsx-boolean-value": "off",
         "react/prop-types": "off",
         "jsx-a11y/label-has-associated-control": "off",
         "jsx-a11y/control-has-associated-label": "off",
