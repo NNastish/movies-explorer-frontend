@@ -2,6 +2,8 @@ import React from 'react';
 
 const FormField = ({
   type, name, visibleName, handleChange, autoComplete, errors, minLength = 2, className = 'auth', defaultValue = '',
+  inputDisable = false,
+  // value,
 }) => {
   const isNotValid = () => {
     if (errors[name]) {
@@ -22,13 +24,12 @@ const FormField = ({
           minLength={minLength}
           autoComplete={autoComplete}
           defaultValue={defaultValue}
-          onClick={(e) => {
-            e.target.value = '';
-          }}
+          disabled={inputDisable}
+          // value={value}
           required
         />
       </label>
-      <span className="auth__input-error" style={{ visibility: isNotValid() ? 'visible' : 'hidden' }}>Что-то пошло не так...</span>
+      <span className="auth__input-error" style={{ visibility: isNotValid() ? 'visible' : 'hidden' }}>{errors[name]}</span>
     </>
   );
 };

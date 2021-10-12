@@ -1,6 +1,10 @@
 /* eslint-disable consistent-return */
 /* eslint-disable array-callback-return */
-import { FOOTER_HEADER_ENDPOINTS, HOURS_BETWEEN_LOCALSTORAGE_UPDATE, SHORT_FILM_DURATION_LIMIT, YANDEX_API_URL } from './constants';
+import {
+  FOOTER_HEADER_ENDPOINTS,
+  HOURS_BETWEEN_LOCALSTORAGE_UPDATE,
+  SHORT_FILM_DURATION_LIMIT, YANDEX_API_URL,
+} from './constants';
 
 const findEndPoint = (currentLocation) => {
   const pathName = currentLocation.pathname;
@@ -50,42 +54,41 @@ const showError = (error) => {
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-function getFilmsFilteredByKey(key, films) {
-  // if (!films || !key.length) {
-  //   return;
-  // }
-  // return films.filter((film) => {
-  //   const hasKeyInRussianName = film?.nameRU && film?.nameRU.includes(key);
-  //   const hasKeyInEnglishName = film?.nameEN && film?.nameEN.includes(key);
-  //   const hasKeyInDescription = film?.description.includes(key);
-  //   if (hasKeyInDescription || hasKeyInEnglishName || hasKeyInRussianName) {
-  //     return film;
-  //   }
-  // });
+function getFilmsFilteredByKey({ key, films }) {
   if (films.length) {
-    return films.filter((movie) => movie.nameRU.toLowerCase().includes(key.toLowerCase()));
+    return films.filter((movie) => {
+      const ruName = movie.nameRU;
+      const ruNameLower = ruName.toLowerCase();
+      if (ruNameLower.includes(key.toLowerCase())) return true;
+    });
   }
   return [];
 }
 
-// function getFilmsFilteredByDuration(timeLimit, filmFilteredByKey) {
-//   if (!filmFilteredByKey) {
-//     return;
-//   }
-//   return filmFilteredByKey.filter((film) => film.duration <= timeLimit);
-// }
-function getFilmsFilteredByDuration({ movies, areShort}) {
+function getFilmsFilteredByDuration({ movies, areShort }) {
   if (movies.length) {
     return movies.filter((movie) => {
       if (areShort) {
         if (movie.duration < SHORT_FILM_DURATION_LIMIT) {
           return true;
         }
+      } else if (movie.duration >= SHORT_FILM_DURATION_LIMIT) {
+        return true;
       }
-      return true;
     });
   }
   return [];
+}
+
+function delay(fn, ms) {
+  let timer;
+  return () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      // eslint-disable-next-line prefer-rest-params
+      fn.apply(this, arguments);
+    }, ms);
+  };
 }
 
 function parseFilmDurationToView({ duration }) {
@@ -110,6 +113,8 @@ const timeLocalStorageExpired = () => {
   return hoursDifference > HOURS_BETWEEN_LOCALSTORAGE_UPDATE;
 };
 
+const getSearchedMovies = () => ((localStorage.getItem('searchedMovies')) ? JSON.parse(localStorage.getItem('searchedMovies')) : []);
+
 const checkIfShouldBeUpdated = () => isLocalStorageEmpty() || timeLocalStorageExpired();
 
 export {
@@ -118,4 +123,5 @@ export {
   parseFilmDurationToView, showError, checkIfShouldBeUpdated,
   defineImageLink, defineIsMovieLiked, defineTrailerLink,
   defineMovieQuantityParams, compareIfBasicArrayBigger,
+  delay, getSearchedMovies,
 };

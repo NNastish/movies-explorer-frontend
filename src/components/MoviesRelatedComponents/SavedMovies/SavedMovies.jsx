@@ -1,65 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import {
-  getFilmsFilteredByDuration, getFilmsFilteredByKey, sleep,
-} from '../../../utils/utils';
-import { SHORT_FILM_DURATION_LIMIT } from '../../../utils/constants';
+import React from 'react';
 import SearchForm from '../SearchForm/SearchForm';
-import MoviesViewController from '../MoviesViewController';
+import MoviesView from '../MoviesView';
+import Message from '../../Message/Message';
+import { NOT_FOUND_TEXT } from '../../../utils/constants';
 
-export default function SavedMovies({ deleteMovie, savedFilms }) {
-  const [areFilmsQueried, setAreFilmsQueried] = useState(true);
-  const [searchPhrase, setSearchPhrase] = useState('');
-  const [isShortFilmsRequired, setIsShortFilmRequired] = useState(false);
-  const [preloaderState, setPreloaderState] = useState(false);
-  const [films, setFilms] = useState(savedFilms);
-  const [shortFilms, setShortFilms] = useState([]);
-  const [moviesToShow, setMoviewToShow] = useState([]);
-
-  const defineMovie = () => (isShortFilmsRequired ? shortFilms : films);
-
-  function searchFilms(baseFilms) {
-    const filteredByKey = getFilmsFilteredByKey(searchPhrase, baseFilms);
-    setFilms(filteredByKey);
-    const filteredByDuration = getFilmsFilteredByDuration(SHORT_FILM_DURATION_LIMIT, filteredByKey);
-    setShortFilms(filteredByDuration);
-    setMoviewToShow(defineMovie());
-  }
-
-  useEffect(() => {
-    setPreloaderState(true);
-    sleep(1500)
-      .then(() => {
-        searchFilms(savedFilms);
-      })
-      .finally(() => {
-        setPreloaderState(false);
-      });
-  }, [searchPhrase]);
-
-  useEffect(() => {
-    setFilms(savedFilms);
-    const filteredByDuration = getFilmsFilteredByDuration(SHORT_FILM_DURATION_LIMIT, savedFilms);
-    setShortFilms(filteredByDuration);
-    setMoviewToShow(savedFilms);
-  }, []);
-
+export default function SavedMovies({
+  movies, deleteMovie, submitSearch, handleToggleChange, isSavedRoute, isNotFound,
+}) {
   return (
-    <>
+    <section className="movies-card">
       <SearchForm
-        handleSearchPhraseChange={setSearchPhrase}
-        handleFilterChange={setIsShortFilmRequired}
-        isFilterOn={isShortFilmsRequired}
-        setIsSearched={setAreFilmsQueried}
+        submitSearch={submitSearch}
+        handleToggleChange={handleToggleChange}
       />
-      {
-        areFilmsQueried && (
-        <MoviesViewController
-          preloaderState={preloaderState}
-          films={moviesToShow}
-          deleteMovie={deleteMovie}
-        />
-        )
-      }
-    </>
+      {isNotFound ? <Message text={NOT_FOUND_TEXT} isError={false} /> : null}
+      <MoviesView
+        isSavedRoute={isSavedRoute}
+        movies={movies}
+        deleteMovie={deleteMovie}
+        isNotFound={isNotFound}
+      />
+    </section>
   );
 }

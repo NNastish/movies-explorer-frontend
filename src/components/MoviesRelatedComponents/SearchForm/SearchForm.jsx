@@ -7,7 +7,7 @@ import { useFormWithValidation } from '../../../utils/customHooks';
 export default function SearchForm({
   submitSearch, handleToggleChange,
 }) {
-  const { error, setError } = useState('');
+  const [error, setError] = useState('');
   const {
     values, errors, isValid, handleChange,
   } = useFormWithValidation({ query: '' });
@@ -33,7 +33,8 @@ export default function SearchForm({
             <input
               placeholder="Фильм"
               className="search__input"
-              value={values.key}
+              name="query"
+              value={values.query}
               onChange={handleChange}
               minLength="1"
               maxLength="30"

@@ -3,16 +3,26 @@ import './Auth.css';
 import Greeting from './Greeting';
 import FormField from './FormField';
 import Clarify from './Clarify';
+import { useFormWithValidation } from '../../utils/customHooks';
+import Message from '../Message/Message';
+import { REGISTER_ERROR } from '../../utils/constants';
 
-export default function Register({ handleRegister, validation }) {
-  function handleChange(e) {
-    validation.handleChange(e);
-  }
+export default function Register({
+  handleRegister, isFormProceed, setIsFormProceed, isRegisterError,
+}) {
+  const {
+    values, handleChange, errors, resetForm, isValid,
+  } = useFormWithValidation({
+    email: '',
+    password: '',
+    name: '',
+  });
 
   function handleSubmit(e) {
     e.preventDefault();
-    handleRegister(validation.values);
-    validation.resetForm();
+    setIsFormProceed(true);
+    handleRegister(values);
+    resetForm();
   }
 
   return (
@@ -25,14 +35,16 @@ export default function Register({ handleRegister, validation }) {
           name="name"
           autoComplete="username"
           handleChange={handleChange}
-          errors={validation.errors}
+          errors={errors}
+          inputDisable={isFormProceed}
         />
         <FormField
           type="email"
           visibleName="Email"
           name="email"
           handleChange={handleChange}
-          errors={validation.errors}
+          errors={errors}
+          inputDisable={isFormProceed}
         />
         <FormField
           type="password"
@@ -40,10 +52,12 @@ export default function Register({ handleRegister, validation }) {
           name="password"
           autoComplete="new-password"
           handleChange={handleChange}
-          errors={validation.errors}
+          errors={errors}
           minLength={8}
+          inputDisable={isFormProceed}
         />
-        <button className="auth__button" type="submit" disabled={!validation.isValid}>Зарегистрироваться</button>
+        {isRegisterError ? <Message text={REGISTER_ERROR} isError={true} /> : null}
+        <button className="auth__button" type="submit" disabled={!isValid || isFormProceed}>Зарегистрироваться</button>
         <Clarify />
       </form>
     </section>

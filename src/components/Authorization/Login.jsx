@@ -3,16 +3,25 @@ import './Auth.css';
 import Greeting from './Greeting';
 import Clarify from './Clarify';
 import FormField from './FormField';
+import { useFormWithValidation } from '../../utils/customHooks';
+import Message from '../Message/Message';
+import { LOGIN_ERROR } from '../../utils/constants';
 
-function Login({ handleLogin, validation }) {
-  function handleChange(e) {
-    validation.handleChange(e);
-  }
+function Login({
+  handleLogin, isFormProceed, setIsFormProceed, isLoginError,
+}) {
+  const {
+    values, handleChange, errors, resetForm, isValid,
+  } = useFormWithValidation({
+    email: '',
+    password: '',
+  });
 
   function handleSubmit(e) {
     e.preventDefault();
-    handleLogin(validation.values);
-    validation.resetForm();
+    setIsFormProceed(true);
+    handleLogin(values);
+    resetForm();
   }
 
   return (
@@ -25,7 +34,9 @@ function Login({ handleLogin, validation }) {
           name="email"
           autoComplete="email"
           handleChange={handleChange}
-          errors={validation.errors}
+          errors={errors}
+          value={values.email}
+          inputDisable={isFormProceed}
         />
         <FormField
           type="password"
@@ -33,10 +44,13 @@ function Login({ handleLogin, validation }) {
           name="password"
           autoComplete="current-password"
           handleChange={handleChange}
-          errors={validation.errors}
+          errors={errors}
           minLength={8}
+          value={values.password}
+          inputDisable={isFormProceed}
         />
-        <button className="auth__button" type="submit" disabled={!validation.isValid}>Войти</button>
+        {isLoginError ? <Message text={LOGIN_ERROR} isError={true} /> : null}
+        <button className="auth__button" type="submit" disabled={!isValid || isFormProceed}>Войти</button>
         <Clarify />
       </form>
     </section>

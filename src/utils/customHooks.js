@@ -8,9 +8,8 @@ export function useFormWithValidation(input) {
   const [isValid, setIsValid] = React.useState(false);
 
   const handleChange = (event) => {
-    const { target } = event.target;
-    const { name } = target.name;
-    const { value } = target.value;
+    const { target } = event;
+    const { name, value } = target;
     setValues({ ...values, [name]: value });
     setErrors({ ...errors, [name]: target.validationMessage });
     setIsValid(target.closest('form').checkValidity());

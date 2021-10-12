@@ -5,31 +5,33 @@ import './App.css';
 import RouteController from '../RouteController';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
-import { isHeaderFooterVisible, showError, checkIfShouldBeUpdated } from '../../utils/utils';
+import { getSearchedMovies, isHeaderFooterVisible, showError } from '../../utils/utils';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import { CurrentLocationContext } from '../../contexts/CurrentLocationContext';
 import * as api from '../../utils/MainApi';
-import * as beatFilmApi from '../../utils/MoviesApi';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
+  const [movies, setMovies] = useState(getSearchedMovies());
   const [headerFooterVisibility, setHeaderFooterVisibility] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
-  const [beatFilms, setBeatFilms] = useState([]);
-  const [savedFilms, setSavedFilms] = useState([]);
   const currentLocation = useLocation();
   const history = useHistory();
 
   function promoteLogging(userData) {
     setCurrentUser(userData);
     setLoggedIn(true);
-    // history.push('/movies');
+    history.push('/movies');
   }
 
   function handleExit() {
     localStorage.removeItem('jwt');
+    localStorage.removeItem('movies');
+    localStorage.removeItem('searchedMovies');
     setLoggedIn(false);
-    history.push('/');
+    setMovies([]);
+    setCurrentUser({ email: '', name: '', _id: '' });
+    history.push('/signin');
   }
 
   async function tokenCheck() {
@@ -53,27 +55,11 @@ function App() {
 
   useEffect(() => {
     tokenCheck();
-
-    // api.getSavedMovies()
-    //   .then((saved) => {
-    //     const ownedFilms = saved.filter((film) => film.owner._id === currentUser._id);
-    //     setSavedFilms(ownedFilms);
-    //   });
-
-    // const shouldBeUpdated = checkIfShouldBeUpdated();
-    // if (shouldBeUpdated) {
-    //   beatFilmApi.getBaseFilms()
-    //     .then((response) => {
-    //       setBeatFilms(response);
-    //       localStorage.setItem('beatFilms', JSON.stringify(response));
-    //       localStorage.setItem('updateTime', new Date().getTime());
-    //     })
-    //     .catch(showError);
-    // } else {
-    //   const cachedFilms = JSON.parse(localStorage.getItem('beatFilms'));
-    //   setBeatFilms(cachedFilms);
-    // }
   }, []);
+
+  // useEffect(() => {
+
+  // }, [loggedIn]);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -92,9 +78,7 @@ function App() {
             showError={showError}
             setCurrentUser={setCurrentUser}
             handleExit={handleExit}
-            savedFilms={savedFilms}
-            beatFilms={beatFilms}
-            setSavedFilms={setSavedFilms}
+            films={movies}
           />
 
           <Footer

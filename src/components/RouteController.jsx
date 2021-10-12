@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Route, Switch, useHistory } from 'react-router-dom';
 import Promo from './Promo/Promo';
 import AboutProject from './AboutProject/AboutProject';
 import Techs from './Techs/Techs';
@@ -9,32 +9,34 @@ import Profile from './Profile/Profile';
 import Login from './Authorization/Login';
 import Register from './Authorization/Register';
 import NotFound from './NotFound/NotFound';
-import Movies from './MoviesRelatedComponents/Movies/Movies';
-import SavedMovies from './MoviesRelatedComponents/SavedMovies/SavedMovies';
 import MovieController from './MoviesRelatedComponents/MovieController';
 import ProtectedRoute from './ProtectedRoute';
 import * as api from '../utils/MainApi';
-import { CurrentUserContext } from '../contexts/CurrentUserContext';
-import { BASE_URL_YANDEX } from '../utils/MoviesApi';
-import { useFormWithValidation } from '../utils/customHooks';
 
 const RouteController = ({
   loggedIn, promoteLogging, showError, setCurrentUser,
-  handleExit, savedFilms, beatFilms, setSavedFilms,
+  handleExit, films,
 }) => {
-  const validation = useFormWithValidation();
+  const [isUpdateError, setIsUpdateError] = useState(false);
+  const [isUpdateSuccess, setIsUpdateSuccess] = useState(false);
+  const [isLoginError, setIsLoginError] = useState(false);
+  const [isFormProceed, setIsFormProceed] = useState(false);
+  const [isRegisterError, setIsRegisterError] = useState(false);
+  const history = useHistory();
 
   async function handleLogin(login) {
     try {
       const loginResponse = await api.login(login);
-      if (loginResponse) {
-        const { user, token } = loginResponse;
-        localStorage.removeItem('jwt');
+      const { user, token } = loginResponse;
+      if (token) {
         localStorage.setItem('jwt', token);
         promoteLogging(user);
       }
     } catch (e) {
       showError(e);
+      setIsLoginError(true);
+    } finally {
+      setIsFormProceed(false);
     }
   }
 
@@ -43,10 +45,13 @@ const RouteController = ({
       const response = await api.register(register);
       if (response) {
         const { email, password } = register;
-        await handleLogin({ email, password });
+        handleLogin({ email, password });
       }
     } catch (e) {
       showError(e);
+      setIsRegisterError(true);
+    } finally {
+      setIsFormProceed(false);
     }
   }
 
@@ -57,57 +62,18 @@ const RouteController = ({
       if (userUpdated) {
         const { name, email } = userUpdated;
         setCurrentUser({ name, email });
+        setIsUpdateSuccess(true);
       }
     } catch (e) {
       showError(e);
+      setIsUpdateError(true);
     }
   }
 
-  // async function saveMovie(movie) {
-  //   try {
-  //     const {
-  //       country, director, duration, year,
-  //       description, image, trailerLink: trailer,
-  //       nameRU, nameEN, id: movieId,
-  //     } = movie;
-  //     const imageUrl = `${BASE_URL_YANDEX}${image?.url}`;
-  //     const thumbnail = `${BASE_URL_YANDEX}${image?.formats?.thumbnail?.url}`;
-  //     const movieToSave = {
-  //       country: country ?? 'undefined',
-  //       director: director ?? 'undefined',
-  //       duration,
-  //       year: year ?? 'undefined',
-  //       description: description ?? 'undefined',
-  //       image: imageUrl,
-  //       trailer,
-  //       nameEN: nameEN ?? 'undefined',
-  //       nameRU: nameRU ?? 'undefined',
-  //       movieId,
-  //       thumbnail,
-  //     };
-  //     const token = localStorage.getItem('jwt');
-  //     const isAlreadySaved = savedFilms.some((film) => film.movieId === movieToSave.movieId);
-  //     if (!isAlreadySaved) {
-  //       await api.saveMovie(movieToSave, token);
-  //       setSavedFilms([...savedFilms, movieToSave]);
-  //     }
-  //   } catch (e) {
-  //     showError(e);
-  //   }
-  // }
-
-  // async function deleteMovie(movieId) {
-  //   try {
-  //     const token = localStorage.getItem('jwt');
-  //     const deleted = await api.deleteMovie(movieId, token);
-  //     if (deleted) {
-  //       const newFilms = savedFilms.filter((film) => film._id !== movieId);
-  //       setSavedFilms(newFilms);
-  //     }
-  //   } catch (e) {
-  //     showError(e);
-  //   }
-  // }
+  useEffect(() => {
+    setIsLoginError(false);
+    setIsRegisterError(false);
+  }, [history]);
 
   return (
     <Switch>
@@ -122,44 +88,46 @@ const RouteController = ({
         path="/movies"
         loggedIn={loggedIn}
         component={MovieController}
-        // component={Movies}
-        // saveMovie={saveMovie}
-        // deleteMovie={deleteMovie}
-        // beatFilms={beatFilms}
+        films={films}
       />
       <ProtectedRoute
         path="/saved-movies"
         loggedIn={loggedIn}
         component={MovieController}
-        // component={SavedMovies}
-        // deleteMovie={deleteMovie}
-        // savedFilms={savedFilms}
+        films={films}
       />
       <ProtectedRoute
         path="/profile"
-        component={Profile}
         loggedIn={loggedIn}
+        component={Profile}
         handleExit={handleExit}
         handleUpdateUser={handleUpdateUser}
-        validation={validation}
-      />
-      <ProtectedRoute
-        path="*"
-        component={NotFound}
-        loggedIn={loggedIn}
+        isUpdateError={isUpdateError}
+        setIsUpdateError={setIsUpdateError}
+        isUpdateSuccess={isUpdateSuccess}
+        setIsUpdateSuccess={setIsUpdateSuccess}
       />
       <Route path="/signin">
         <Login
           handleLogin={handleLogin}
-          validation={validation}
+          isLoginError={isLoginError}
+          isFormProceed={isFormProceed}
+          setIsFormProceed={setIsFormProceed}
         />
       </Route>
       <Route path="/signup">
         <Register
           handleRegister={handleRegister}
-          validation={validation}
+          isRegisterError={isRegisterError}
+          isFormProceed={isFormProceed}
+          setIsFormProceed={setIsFormProceed}
         />
       </Route>
+      <ProtectedRoute
+        path="*"
+        component={NotFound}
+        loggedIn={loggedIn}
+      />
     </Switch>
   );
 };

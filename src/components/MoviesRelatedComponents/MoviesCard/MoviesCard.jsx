@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './MoviesCard.css';
 import {
   parseFilmDurationToView, defineImageLink,
@@ -11,8 +11,9 @@ export default function MoviesCard({
   const movieImageLink = defineImageLink(isSavedRoute, film);
   const movieTrailerLink = defineTrailerLink({ trailer: film.trailerLink });
   const movieDuration = parseFilmDurationToView(film);
-  const isMovieLiked = defineIsMovieLiked(film, savedMoviesId);
-  const movieButtonClassMoviesRoute = isMovieLiked ? 'movies__button' : 'movies__button-add';
+  // const isMovieLiked = defineIsMovieLiked(film, savedMoviesId);
+  const [isMovieLiked, setIsMovieLiked] = useState(defineIsMovieLiked(film, savedMoviesId));
+  const movieButtonClassMoviesRoute = isMovieLiked ? 'movies__button-add' : 'movies__button';
   const movieButtonClass = isSavedRoute ? 'movies__button-delete' : movieButtonClassMoviesRoute;
   const tumbler = isSavedRoute || isMovieLiked;
   const movieButtonText = tumbler ? '' : 'Сохранить';
@@ -24,6 +25,11 @@ export default function MoviesCard({
       saveMovie(film);
     }
   };
+
+  useEffect(() => {
+    const value = defineIsMovieLiked(film, savedMoviesId);
+    setIsMovieLiked(value);
+  }, [film, savedMoviesId]);
 
   return (
     <div className="movies">

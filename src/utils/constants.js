@@ -25,9 +25,21 @@ const MOVIES_EMPTY = 'MoviesEmpty';
 
 const REQUEST_ERROR = 'Во время вашего запроса случилась ошибка. Попробуйте перезагрузить страницу или повторить действие позднее.';
 
+const UNIQUE_VALUE_ERROR = 'Значения полей не должны повторяться';
+
+const PROFILE_UPDATE_ERROR = 'Ошибка при изменении данных профиля.';
+
+const LOGIN_ERROR = 'Ошибка при попытке логина. Пожалуйста проверьте ваши данные и повторите вход.';
+
+const REGISTER_ERROR = 'Ошибка при попытке регистрации. Пожалуйста проверьте ваши данные и повторите регистрацию.';
+
+const PROFILE_UPDATE_SUCCESS = 'Ваш профиль успешно обновлён.';
+
 export {
   FOOTER_HEADER_ENDPOINTS, CLARIFY_LOGIN,
   CLARIFY_REGISTER, SHORT_FILM_DURATION_LIMIT,
   HOURS_BETWEEN_LOCALSTORAGE_UPDATE, YANDEX_API_URL, SERVER_API_URL,
-  NOT_FOUND_TEXT, REQUEST_ERROR, MOVIES_EMPTY,
+  NOT_FOUND_TEXT, REQUEST_ERROR, MOVIES_EMPTY, UNIQUE_VALUE_ERROR,
+  PROFILE_UPDATE_ERROR, PROFILE_UPDATE_SUCCESS, LOGIN_ERROR,
+  REGISTER_ERROR,
 };

@@ -1,135 +1,154 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Movies from './Movies/Movies';
 import SavedMovies from './SavedMovies/SavedMovies';
-import { findEndPoint, getFilmsFilteredByDuration, getFilmsFilteredByKey, showError } from '../../utils/utils';
+import {
+  findEndPoint, getFilmsFilteredByDuration, getFilmsFilteredByKey, showError,
+} from '../../utils/utils';
 import { CurrentLocationContext } from '../../contexts/CurrentLocationContext';
 import * as mainApi from '../../utils/MainApi';
-import getBaseFilms from '../../utils/MoviesApi';
+import { getBaseFilms } from '../../utils/MoviesApi';
 import { MOVIES_EMPTY } from '../../utils/constants';
+import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 
-export default function MovieController() {
-    const [movies, setMovies] = useState(
-        localStorage.getItem('movies') ? JSON.parse(localStorage.getItem('movies')) : []
-    );
-    const [movieQuery, setMovieQuery] = useState('');
-    const [savedMovies, setSavedMovies] = useState([]);
-    const [savedMovieQuery, setSavedMovieQuery] = useState('');
-    const [savedMoviesId, setSavedMoviesId] = useState([]);
-    const [queriedSavedMovies, setQueriedSavedMovies] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [isErrorHappened, setIsErrorHappened] = useState(false);
-    const [isNotFound, setIsNotFound] = useState(false);
-    const [moviesToggle, setMoviesToggle] = useState(false);
-    const [savedMoviesToggle, setSavedMoviesToggle] = useState(false);
-    const currentLocation = useContext(CurrentLocationContext);
-    const isSavedRoute = findEndPoint(currentLocation) === '/saved-movies';
+export default function MovieController({ films }) {
+  const [movies, setMovies] = useState(films);
+  // const [movieQuery, setMovieQuery] = useState('');
+  const [savedMovies, setSavedMovies] = useState([]);
+  // const [savedMovieQuery, setSavedMovieQuery] = useState('');
+  const [savedMoviesId, setSavedMoviesId] = useState([]);
+  const [queriedSavedMovies, setQueriedSavedMovies] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isErrorHappened, setIsErrorHappened] = useState(false);
+  const [isNotFound, setIsNotFound] = useState(false);
+  const [savedNotFound, setSavedNotFound] = useState(false);
+  const [moviesToggle, setMoviesToggle] = useState(false);
+  const [savedMoviesToggle, setSavedMoviesToggle] = useState(false);
+  const currentLocation = useContext(CurrentLocationContext);
+  const currentUser = useContext(CurrentUserContext);
+  const isSavedRoute = findEndPoint(currentLocation) === '/saved-movies';
 
-    const deleteMovie = (movie) => {
-        console.log('deleteMovie: ', movie);
-        console.log('is _id there?');
-        mainApi.deleteMovie(movie._id)
-        .then((deleted) => {
-            console.log('server answer on delete: ', deleted);
-            setSavedMovies(savedMovies.filter((savedMovie) => savedMovie._id != deleted._id));
-            setSavedMoviesId(savedMoviesId.filter((movieId) => movieId != deleted.movieId));
-        })
-        .catch(showError);
-    };
+  const deleteMovie = (movie) => {
+    const token = localStorage.getItem('jwt');
+    const differentId = savedMovies.filter((film) => film.movieId === movie.id)[0]._id;
+    const id = movie.owner ? movie._id : differentId;
+    mainApi.deleteMovie(id, token)
+      .then((deleted) => {
+        setSavedMovies(savedMovies.filter((savedMovie) => savedMovie._id !== deleted._id));
+        setSavedMoviesId(savedMoviesId.filter((movieId) => movieId !== deleted.movieId));
+      })
+      .catch(showError);
+  };
 
-    const saveMovie = (movie) => {
-        console.log('saveMovie: ', movie);
-        console.log('is id field here?');
-        mainApi.saveMovie(movie)
-        .then((saved) => {
-            console.log('server answer on save: ', saved);
-            console.log('is movieId field there?');
-            setSavedMovies([...savedMovies, saved]);
-            setSavedMoviesId([...savedMoviesId, saved.movieId]);
-        })
-        .catch(showError);
-    };
+  const saveMovie = (movie) => {
+    const token = localStorage.getItem('jwt');
+    mainApi.saveMovie(movie, token)
+      .then((saved) => {
+        setSavedMovies([...savedMovies, saved]);
+        setSavedMoviesId([...savedMoviesId, saved.movieId]);
+      })
+      .catch(showError);
+  };
 
-    const setActualMovies = ({ query, movies, toggle, fn }) => {
-        const searchedMovies = getFilmsFilteredByKey(query, movies);
-        const queriedMovies = getFilmsFilteredByDuration({ movies: searchedMovies, areShort: toggle}); 
-        fn(queriedMovies);
-        return {searchedMovies, queriedMovies};
-    };
+  const setActualMovies = ({
+    query, toFilter, toggle, fn,
+  }) => {
+    let searchedMovies = [];
+    if (query) {
+      searchedMovies = getFilmsFilteredByKey({ key: query, films: toFilter });
+    }
+    const movieToFilter = searchedMovies.length ? searchedMovies : toFilter;
+    const queriedMovies = getFilmsFilteredByDuration({
+      movies: movieToFilter, areShort: toggle,
+    });
+    fn(queriedMovies);
+    return { searchedMovies, queriedMovies };
+  };
 
-    const submitSearchMovies = async (query) => {
-        console.log('submitSearchMovies');
-        setIsLoading(true);
-        setIsErrorHappened(false);
-        setIsNotFound(false);
-        setMovieQuery(query);
-        try {
-            let localMovies = JSON.parse(localStorage.getItem('movies'));
-            if (!localMovies) {
-                const importMovies = await getBaseFilms();
-                localStorage.setItem('movies', JSON.stringify(importMovies));
-                localMovies = importMovies;
-            }
-            const { searchedMovies, queriedMovies} = setActualMovies({
-                query: query, movies: localMovies, toggle: moviesToggle, fn: setMovies
-            });
-            localStorage.setItem('searchedMovies', JSON.stringify(searchedMovies));
-            if (!queriedMovies || queriedMovies.length === 0) {
-                setIsNotFound(true);
-            }
-        } catch (err) {
-            showError(err);
-            setIsErrorHappened(true);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+  async function submitSearchMovies(query) {
+    try {
+      setIsLoading(true);
+      setIsErrorHappened(false);
+      setIsNotFound(false);
+      // setMovieQuery(query);
+      let localMovies = JSON.parse(localStorage.getItem('movies'));
+      if (!localMovies) {
+        const importMovies = await getBaseFilms();
+        localStorage.setItem('movies', JSON.stringify(importMovies));
+        localMovies = importMovies;
+      }
+      const { searchedMovies, queriedMovies } = setActualMovies({
+        query, toFilter: localMovies, toggle: moviesToggle, fn: setMovies,
+      });
+      localStorage.setItem('searchedMovies', JSON.stringify(searchedMovies));
+      if (!queriedMovies || queriedMovies.length === 0) {
+        setIsNotFound(true);
+      }
+    } catch (err) {
+      showError(err);
+      setIsErrorHappened(true);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
-    const submitSearchSavedMovies = (query) => {
-        console.log('submitSearchSavedMovies');
-        setSavedMovieQuery(query);
-        setActualMovies({
-            query: query, movies: savedMovies, toggle: savedMoviesToggle, fn: setQueriedSavedMovies
-        });
-    };
+  const submitSearchSavedMovies = (query) => {
+    setSavedNotFound(false);
+    // setSavedMovieQuery(query);
+    const { searchedMovies, queriedMovies } = setActualMovies({
+      query, toFilter: savedMovies, toggle: savedMoviesToggle, fn: setQueriedSavedMovies,
+    });
+    if (!searchedMovies || !queriedMovies || !searchedMovies.length || !queriedMovies.length) {
+      setSavedNotFound(true);
+    }
+  };
 
-    // set Saved Movies
-    useEffect(() => {
-        mainApi.getSavedMovies()
-        .then((movies) => {
-            // на сервере уже должна происходить сортировка
-            console.log('mounting movieController', movies, movies.data);
-            setSavedMovies(movies);
-            setSavedMoviesId(movies.map((movie) => movie.movieId));
-        })
-        .catch(showError);
-    }, []);
+  // set Saved Movies
+  useEffect(() => {
+    const token = localStorage.getItem('jwt');
+    mainApi.getSavedMovies(token)
+      .then((saved) => {
+        const ownedMovies = saved.filter((movie) => movie.owner._id === currentUser._id);
+        setSavedMovies(ownedMovies);
+        setSavedMoviesId(ownedMovies.map((movie) => movie.movieId));
+      })
+      .catch(showError);
+  }, []);
 
-    useEffect(() => {
-        setIsNotFound(false);
-    }, [currentLocation]);
+  useEffect(() => {
+    setIsNotFound(false);
+    setSavedNotFound(false);
+  }, [currentLocation]);
 
-    useEffect(() => {
-        setActualMovies({
-            query: savedMovieQuery, movies: savedMovies, toggle: savedMoviesToggle, fn: setQueriedSavedMovies
-        });
-    }, [savedMoviesToggle]);
+  useEffect(() => {
+    setActualMovies({
+      query: '',
+      toFilter: savedMovies,
+      toggle: savedMoviesToggle,
+      fn: setQueriedSavedMovies,
+    });
+  }, [savedMoviesToggle]);
 
-    useEffect(() => {
-        if (localStorage.getItem('searchedMovies')) {
-            setActualMovies({
-                query: movieQuery, movies: movies, toggle: moviesToggle, fn: setMovies
-            });
-        }
-    }, [moviesToggle]);
+  useEffect(() => {
+    if (localStorage.getItem('searchedMovies')) {
+      setActualMovies({
+        query: '', toFilter: movies, toggle: moviesToggle, fn: setMovies,
+      });
+    }
+  }, [moviesToggle]);
 
-    return isSavedRoute ? 
-    <SavedMovies
+  return isSavedRoute
+    ? (
+      <SavedMovies
         movies={queriedSavedMovies.length ? queriedSavedMovies : MOVIES_EMPTY}
         deleteMovie={deleteMovie}
         submitSearch={submitSearchSavedMovies}
         handleToggleChange={setSavedMoviesToggle}
-    /> : 
-    <Movies
+        isSavedRoute={isSavedRoute}
+        isNotFound={savedNotFound}
+      />
+    )
+    : (
+      <Movies
         isLoading={isLoading}
         isNotFound={isNotFound}
         isErrorHappened={isErrorHappened}
@@ -140,5 +159,6 @@ export default function MovieController() {
         saveMovie={saveMovie}
         deleteMovie={deleteMovie}
         isSavedRoute={isSavedRoute}
-    />;
+      />
+    );
 }

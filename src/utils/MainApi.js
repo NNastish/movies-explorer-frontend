@@ -1,5 +1,5 @@
 // our api
-import { SERVER_API_URL } from './constants';
+import { SERVER_API_URL, YANDEX_API_URL } from './constants';
 
 // eslint-disable-next-line prefer-promise-reject-errors
 const handleResponse = (response) => (response.ok ? response.json() : Promise.reject(`Ошибка: ${response.status}`));
@@ -42,28 +42,40 @@ export const getUserContent = (token) => fetch(`${SERVER_API_URL}/users/me`, {
 })
   .then((response) => handleResponse(response));
 
-export const updateUserInfo = (userInfo, token) => fetch(`${SERVER_API_URL}/users/me`, {
+export const updateUserInfo = (userInfo, tokenJwt) => fetch(`${SERVER_API_URL}/users/me`, {
   method: 'PATCH',
   headers: {
     'Content-Type': 'application/json',
-    Authorization: `Bearer ${token}`,
+    Authorization: `Bearer ${tokenJwt}`,
   },
   body: JSON.stringify(userInfo),
 })
   .then((response) => handleResponse(response));
 
-// const token = localStorage.getItem('jwt');
-// const authorization = `Bearer ${token}`;
-
-export const saveMovie = (movie, token) => fetch(`${SERVER_API_URL}/movies`, {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${token}`,
-  },
-  body: JSON.stringify(movie),
-})
-  .then((response) => handleResponse(response));
+export const saveMovie = (movie, token) => {
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      country: movie.country || 'null',
+      nameRU: movie.nameRU || 'null',
+      nameEN: movie.nameEN || 'null',
+      movieId: movie.id.toString(),
+      director: movie.director || 'null',
+      duration: movie.duration || 0,
+      year: movie.year || 0,
+      description: movie.description || 'null',
+      image: `${YANDEX_API_URL}${movie.image.url}`,
+      trailer: movie.trailerLink.startsWith('https') ? movie.trailerLink : 'www.youtube.com',
+      thumbnail: `${YANDEX_API_URL}${movie.image.formats.thumbnail.url}`,
+    }),
+  };
+  return fetch(`${SERVER_API_URL}/movies`, options)
+    .then((response) => handleResponse(response));
+};
 
 export const deleteMovie = (movieId, token) => fetch(`${SERVER_API_URL}/movies/${movieId}`, {
   method: 'DELETE',
@@ -72,8 +84,8 @@ export const deleteMovie = (movieId, token) => fetch(`${SERVER_API_URL}/movies/$
   },
 })
   .then((response) => handleResponse(response));
-const token = localStorage.getItem('jwt');
-export const getSavedMovies = () => fetch(`${SERVER_API_URL}/movies`, {
+
+export const getSavedMovies = (token) => fetch(`${SERVER_API_URL}/movies`, {
   method: 'GET',
   headers: {
     'Content-Type': 'application/json',
