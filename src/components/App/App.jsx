@@ -17,11 +17,10 @@ export default function App() {
   const [currentUser, setCurrentUser] = useState({});
   const currentLocation = useLocation();
   const history = useHistory();
-
+  console.log(history);
   function promoteLogging(userData) {
     setCurrentUser(userData);
     setLoggedIn(true);
-    history.push('/movies');
   }
 
   function handleExit() {
@@ -56,10 +55,6 @@ export default function App() {
   useEffect(() => {
     tokenCheck();
   }, []);
-
-  // useEffect(() => {
-
-  // }, [loggedIn]);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>

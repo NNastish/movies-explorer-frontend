@@ -31,6 +31,7 @@ export default function RouteController({
       if (token) {
         localStorage.setItem('jwt', token);
         promoteLogging(user);
+        history.push('/movies');
       }
     } catch (e) {
       showError(e);
@@ -123,11 +124,9 @@ export default function RouteController({
           setIsFormProceed={setIsFormProceed}
         />
       </Route>
-      <ProtectedRoute
-        path="*"
-        component={NotFound}
-        loggedIn={loggedIn}
-      />
+      <Route path="*">
+        <NotFound />
+      </Route>
     </Switch>
   );
 }
