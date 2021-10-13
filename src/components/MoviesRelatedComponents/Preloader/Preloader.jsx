@@ -1,7 +1,7 @@
 import React from 'react';
 import './Preloader.css';
 
-function Preloader() {
+export default function Preloader() {
   return (
     <>
       <div className="preloader">
@@ -12,5 +12,3 @@ function Preloader() {
     </>
   );
 }
-
-export default Preloader;

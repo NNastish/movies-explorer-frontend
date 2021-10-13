@@ -13,10 +13,10 @@ import MovieController from './MoviesRelatedComponents/MovieController';
 import ProtectedRoute from './ProtectedRoute';
 import * as api from '../utils/MainApi';
 
-const RouteController = ({
+export default function RouteController({
   loggedIn, promoteLogging, showError, setCurrentUser,
   handleExit, films,
-}) => {
+}) {
   const [isUpdateError, setIsUpdateError] = useState(false);
   const [isUpdateSuccess, setIsUpdateSuccess] = useState(false);
   const [isLoginError, setIsLoginError] = useState(false);
@@ -130,6 +130,4 @@ const RouteController = ({
       />
     </Switch>
   );
-};
-
-export default RouteController;
+}

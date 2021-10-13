@@ -65,17 +65,24 @@ function getFilmsFilteredByKey({ key, films }) {
   return [];
 }
 
-function getFilmsFilteredByDuration({ movies, areShort }) {
+// function getFilmsFilteredByDuration({ movies, areShort }) {
+//   if (movies.length) {
+//     return movies.filter((movie) => {
+//       if (areShort) {
+//         if (movie.duration < SHORT_FILM_DURATION_LIMIT) {
+//           return true;
+//         }
+//       } else if (movie.duration >= SHORT_FILM_DURATION_LIMIT) {
+//         return true;
+//       }
+//     });
+//   }
+//   return [];
+// }
+
+function getShortFilms({ movies }) {
   if (movies.length) {
-    return movies.filter((movie) => {
-      if (areShort) {
-        if (movie.duration < SHORT_FILM_DURATION_LIMIT) {
-          return true;
-        }
-      } else if (movie.duration >= SHORT_FILM_DURATION_LIMIT) {
-        return true;
-      }
-    });
+    return movies.filter((film) => film.duration < SHORT_FILM_DURATION_LIMIT);
   }
   return [];
 }
@@ -119,9 +126,10 @@ const checkIfShouldBeUpdated = () => isLocalStorageEmpty() || timeLocalStorageEx
 
 export {
   isHeaderFooterVisible, findEndPoint, sleep,
-  getFilmsFilteredByDuration, getFilmsFilteredByKey,
+  // getFilmsFilteredByDuration,
+  getFilmsFilteredByKey,
   parseFilmDurationToView, showError, checkIfShouldBeUpdated,
   defineImageLink, defineIsMovieLiked, defineTrailerLink,
   defineMovieQuantityParams, compareIfBasicArrayBigger,
-  delay, getSearchedMovies,
+  delay, getSearchedMovies, getShortFilms,
 };

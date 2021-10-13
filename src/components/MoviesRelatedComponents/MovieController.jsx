@@ -2,7 +2,9 @@ import React, { useContext, useEffect, useState } from 'react';
 import Movies from './Movies/Movies';
 import SavedMovies from './SavedMovies/SavedMovies';
 import {
-  findEndPoint, getFilmsFilteredByDuration, getFilmsFilteredByKey, showError,
+  findEndPoint,
+  getFilmsFilteredByKey, showError,
+  getShortFilms,
 } from '../../utils/utils';
 import { CurrentLocationContext } from '../../contexts/CurrentLocationContext';
 import * as mainApi from '../../utils/MainApi';
@@ -12,9 +14,11 @@ import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 
 export default function MovieController({ films }) {
   const [movies, setMovies] = useState(films);
-  // const [movieQuery, setMovieQuery] = useState('');
+  const [fullMovies, setFullMovies] = useState([]);
+  const [shortMovies, setShortMovies] = useState([]);
   const [savedMovies, setSavedMovies] = useState([]);
-  // const [savedMovieQuery, setSavedMovieQuery] = useState('');
+  const [savedFullMovies, setSavedFullMovies] = useState([]);
+  const [savedShortMovies, setSavedShortMovies] = useState([]);
   const [savedMoviesId, setSavedMoviesId] = useState([]);
   const [queriedSavedMovies, setQueriedSavedMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -29,7 +33,10 @@ export default function MovieController({ films }) {
 
   const deleteMovie = (movie) => {
     const token = localStorage.getItem('jwt');
-    const differentId = savedMovies.filter((film) => film.movieId === movie.id)[0]._id;
+    let differentId;
+    if (!movie.owner) {
+      differentId = savedMovies.filter((film) => film.movieId === movie.id)[0]._id;
+    }
     const id = movie.owner ? movie._id : differentId;
     mainApi.deleteMovie(id, token)
       .then((deleted) => {
@@ -50,18 +57,14 @@ export default function MovieController({ films }) {
   };
 
   const setActualMovies = ({
-    query, toFilter, toggle, fn,
+    query, moviesToFilter,
+    saveFullMovies, saveShortMovies,
   }) => {
-    let searchedMovies = [];
-    if (query) {
-      searchedMovies = getFilmsFilteredByKey({ key: query, films: toFilter });
-    }
-    const movieToFilter = searchedMovies.length ? searchedMovies : toFilter;
-    const queriedMovies = getFilmsFilteredByDuration({
-      movies: movieToFilter, areShort: toggle,
-    });
-    fn(queriedMovies);
-    return { searchedMovies, queriedMovies };
+    const filteredByQuery = getFilmsFilteredByKey({ key: query, films: moviesToFilter });
+    saveFullMovies(filteredByQuery);
+    const shortFilms = getShortFilms({ movies: filteredByQuery });
+    saveShortMovies(shortFilms);
+    return { filteredFullMovies: filteredByQuery, filteredShortMovies: shortFilms };
   };
 
   async function submitSearchMovies(query) {
@@ -69,20 +72,30 @@ export default function MovieController({ films }) {
       setIsLoading(true);
       setIsErrorHappened(false);
       setIsNotFound(false);
-      // setMovieQuery(query);
       let localMovies = JSON.parse(localStorage.getItem('movies'));
       if (!localMovies) {
         const importMovies = await getBaseFilms();
         localStorage.setItem('movies', JSON.stringify(importMovies));
         localMovies = importMovies;
       }
-      const { searchedMovies, queriedMovies } = setActualMovies({
-        query, toFilter: localMovies, toggle: moviesToggle, fn: setMovies,
+      const { filteredFullMovies, filteredShortMovies } = setActualMovies({
+        query,
+        moviesToFilter: localMovies,
+        saveFullMovies: setFullMovies,
+        saveShortMovies: setShortMovies,
       });
-      localStorage.setItem('searchedMovies', JSON.stringify(searchedMovies));
-      if (!queriedMovies || queriedMovies.length === 0) {
-        setIsNotFound(true);
+      if (moviesToggle) {
+        setMovies(filteredShortMovies);
+        if (!filteredShortMovies || !filteredShortMovies.length) {
+          setIsNotFound(true);
+        }
+      } else {
+        setMovies(filteredFullMovies);
+        if (!filteredFullMovies || !filteredFullMovies.length) {
+          setIsNotFound(true);
+        }
       }
+      localStorage.setItem('searchedMovies', JSON.stringify(filteredFullMovies));
     } catch (err) {
       showError(err);
       setIsErrorHappened(true);
@@ -93,12 +106,22 @@ export default function MovieController({ films }) {
 
   const submitSearchSavedMovies = (query) => {
     setSavedNotFound(false);
-    // setSavedMovieQuery(query);
-    const { searchedMovies, queriedMovies } = setActualMovies({
-      query, toFilter: savedMovies, toggle: savedMoviesToggle, fn: setQueriedSavedMovies,
+    const { filteredFullMovies, filteredShortMovies } = setActualMovies({
+      query,
+      moviesToFilter: savedMovies,
+      saveFullMovies: setSavedFullMovies,
+      saveShortMovies: setSavedShortMovies,
     });
-    if (!searchedMovies || !queriedMovies || !searchedMovies.length || !queriedMovies.length) {
-      setSavedNotFound(true);
+    if (savedMoviesToggle) {
+      setQueriedSavedMovies(filteredShortMovies);
+      if (!filteredShortMovies || !filteredShortMovies.length) {
+        setSavedNotFound(true);
+      }
+    } else {
+      setQueriedSavedMovies(filteredFullMovies);
+      if (!filteredFullMovies || !filteredFullMovies.length) {
+        setSavedNotFound(true);
+      }
     }
   };
 
@@ -109,6 +132,7 @@ export default function MovieController({ films }) {
       .then((saved) => {
         const ownedMovies = saved.filter((movie) => movie.owner._id === currentUser._id);
         setSavedMovies(ownedMovies);
+        setQueriedSavedMovies(ownedMovies);
         setSavedMoviesId(ownedMovies.map((movie) => movie.movieId));
       })
       .catch(showError);
@@ -120,21 +144,26 @@ export default function MovieController({ films }) {
   }, [currentLocation]);
 
   useEffect(() => {
-    setActualMovies({
-      query: '',
-      toFilter: savedMovies,
-      toggle: savedMoviesToggle,
-      fn: setQueriedSavedMovies,
-    });
+    if (savedMoviesToggle) {
+      setQueriedSavedMovies(savedShortMovies);
+    } else {
+      setQueriedSavedMovies(savedFullMovies);
+    }
   }, [savedMoviesToggle]);
 
   useEffect(() => {
     if (localStorage.getItem('searchedMovies')) {
-      setActualMovies({
-        query: '', toFilter: movies, toggle: moviesToggle, fn: setMovies,
-      });
+      if (moviesToggle) {
+        setMovies(shortMovies);
+      } else {
+        setMovies(fullMovies);
+      }
     }
   }, [moviesToggle]);
+
+  useEffect(() => {
+    setMovies(films);
+  }, [films]);
 
   return isSavedRoute
     ? (

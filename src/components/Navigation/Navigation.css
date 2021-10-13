@@ -1,5 +1,5 @@
 .navigation {
-    background-color: #FFFFFF;
+    /* background-color: #FFFFFF; */
     max-height: 74px;
     max-width: 1280px;
     display: flex;
@@ -13,7 +13,7 @@
     max-width: 1140px;
     width: 100%;
     gap: 44px;
-    background-color: #FFFFFF;
+    /* background-color: #FFFFFF; */
     margin: 0 auto;
 }
 
@@ -45,6 +45,8 @@
 .link{
     text-decoration: none;
     cursor: pointer;
+    width: 26px;
+    height: 30px;
 }
 .navigation__account {
     font-size: 13px;
@@ -58,7 +60,7 @@
 .navigation__icon-box {
     width: 26px;
     height: 30px;
-    background-color: #F9F9F9;
+    /* background-color: #F9F9F9; */
     border-radius: 4px;
 }
 .navigation__account-icon {

@@ -3,7 +3,7 @@ import './AuthenticationHeader.css';
 import { Link } from 'react-router-dom';
 import logo from '../../../images/logo.svg';
 
-function AuthenticationHeader() {
+export default function AuthenticationHeader() {
   return (
     <header className="header">
       <div className="header__container">
@@ -27,4 +27,3 @@ function AuthenticationHeader() {
     </header>
   );
 }
-export default AuthenticationHeader;

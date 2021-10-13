@@ -15,17 +15,6 @@ export default function Techs() {
 
           </p>
           <ul className="techs__list">
-            {/* <li className="techs__box">
-              <a
-                className="techs_stack"
-                href="https://en.wikipedia.org/wiki/HTML"
-                target="_blank"
-                rel="noreferrer"
-              >
-                HTML
-
-              </a>
-            </li> */}
             <TechElement link="https://en.wikipedia.org/wiki/HTML" text="HTML" />
             <TechElement link="https://en.wikipedia.org/wiki/CSS" text="CSS" />
             <TechElement link="https://en.wikipedia.org/wiki/JavaScript" text="JS" />
@@ -33,72 +22,6 @@ export default function Techs() {
             <TechElement link="https://en.wikipedia.org/wiki/Git" text="Git" />
             <TechElement link="https://en.wikipedia.org/wiki/Express.js" text="Express.js" />
             <TechElement link="https://en.wikipedia.org/wiki/MongoDB" text="mongoDB" />
-            {/* <li className="techs__box">
-              <a
-                className="techs_stack"
-                href="https://en.wikipedia.org/wiki/CSS"
-                target="_blank"
-                rel="noreferrer"
-              >
-                CSS
-
-              </a>
-            </li> */}
-            {/* <li className="techs__box">
-              <a
-                className="techs_stack"
-                href="https://en.wikipedia.org/wiki/JavaScript"
-                target="_blank"
-                rel="noreferrer"
-              >
-                JS
-
-              </a>
-            </li> */}
-            {/* <li className="techs__box">
-              <a
-                className="techs_stack"
-                href="https://en.wikipedia.org/wiki/React_Native"
-                target="_blank"
-                rel="noreferrer"
-              >
-                React
-
-              </a>
-            </li> */}
-            {/* <li className="techs__box">
-              <a
-                className="techs_stack"
-                href="https://en.wikipedia.org/wiki/Git"
-                target="_blank"
-                rel="noreferrer"
-              >
-                Git
-
-              </a>
-            </li> */}
-            {/* <li className="techs__box">
-              <a
-                className="techs_stack"
-                href="https://en.wikipedia.org/wiki/Express.js"
-                target="_blank"
-                rel="noreferrer"
-              >
-                Express.js
-
-              </a>
-            </li>
-            <li className="techs__box">
-              <a
-                className="techs_stack"
-                href="https://en.wikipedia.org/wiki/MongoDB"
-                target="_blank"
-                rel="noreferrer"
-              >
-                mongoDB
-
-              </a>
-            </li> */}
           </ul>
         </div>
       </div>

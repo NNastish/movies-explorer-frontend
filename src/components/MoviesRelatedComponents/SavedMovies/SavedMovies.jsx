@@ -1,4 +1,5 @@
 import React from 'react';
+import './SavedMovies.css';
 import SearchForm from '../SearchForm/SearchForm';
 import MoviesView from '../MoviesView';
 import Message from '../../Message/Message';

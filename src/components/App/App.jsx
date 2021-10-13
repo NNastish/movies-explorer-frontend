@@ -10,7 +10,7 @@ import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import { CurrentLocationContext } from '../../contexts/CurrentLocationContext';
 import * as api from '../../utils/MainApi';
 
-function App() {
+export default function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [movies, setMovies] = useState(getSearchedMovies());
   const [headerFooterVisibility, setHeaderFooterVisibility] = useState(false);
@@ -90,5 +90,3 @@ function App() {
     </CurrentUserContext.Provider>
   );
 }
-
-export default App;

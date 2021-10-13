@@ -7,7 +7,7 @@ import { useFormWithValidation } from '../../utils/customHooks';
 import Message from '../Message/Message';
 import { LOGIN_ERROR } from '../../utils/constants';
 
-function Login({
+export default function Login({
   handleLogin, isFormProceed, setIsFormProceed, isLoginError,
 }) {
   const {
@@ -56,5 +56,3 @@ function Login({
     </section>
   );
 }
-
-export default Login;

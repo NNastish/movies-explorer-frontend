@@ -35,11 +35,15 @@ const REGISTER_ERROR = 'Ошибка при попытке регистраци�
 
 const PROFILE_UPDATE_SUCCESS = 'Ваш профиль успешно обновлён.';
 
+// const emailRegex = '^[a-zA-Z0-9.!#$%&\'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:.[a-zA-Z0-9-]+)*$';
+const emailCheck = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+// const emailCheck = new RegExp(emailRegex);
+
 export {
   FOOTER_HEADER_ENDPOINTS, CLARIFY_LOGIN,
   CLARIFY_REGISTER, SHORT_FILM_DURATION_LIMIT,
   HOURS_BETWEEN_LOCALSTORAGE_UPDATE, YANDEX_API_URL, SERVER_API_URL,
   NOT_FOUND_TEXT, REQUEST_ERROR, MOVIES_EMPTY, UNIQUE_VALUE_ERROR,
   PROFILE_UPDATE_ERROR, PROFILE_UPDATE_SUCCESS, LOGIN_ERROR,
-  REGISTER_ERROR,
+  REGISTER_ERROR, emailCheck,
 };

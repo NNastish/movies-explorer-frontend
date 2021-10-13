@@ -1,6 +1,6 @@
 import React from 'react';
 
-function TechElement({ link, text }) {
+export default function TechElement({ link, text }) {
   return (
     <li className="techs__box">
       <a
@@ -14,5 +14,3 @@ function TechElement({ link, text }) {
     </li>
   );
 }
-
-export default TechElement;

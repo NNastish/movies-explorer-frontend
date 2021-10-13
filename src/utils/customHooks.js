@@ -1,21 +1,35 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { defineMovieQuantityParams } from './utils';
+/* eslint-disable import/prefer-default-export */
+import { useState, useCallback } from 'react';
+import { emailCheck } from './constants';
 
 // хук управления формой и валидации формы
 export function useFormWithValidation(input) {
-  const [values, setValues] = React.useState(input);
-  const [errors, setErrors] = React.useState({});
-  const [isValid, setIsValid] = React.useState(false);
+  const [values, setValues] = useState(input);
+  const [errors, setErrors] = useState({});
+  const [isValid, setIsValid] = useState(false);
 
   const handleChange = (event) => {
     const { target } = event;
     const { name, value } = target;
-    setValues({ ...values, [name]: value });
-    setErrors({ ...errors, [name]: target.validationMessage });
-    setIsValid(target.closest('form').checkValidity());
+    if (name === 'email') {
+      const isEmailCorrect = emailCheck.test(value);
+      if (isEmailCorrect) {
+        setValues({ ...values, [name]: value });
+        setErrors({ ...errors, [name]: target.validationMessage });
+        setIsValid(target.closest('form').checkValidity());
+      } else {
+        setValues({ ...values, [name]: value });
+        setErrors({ ...errors, [name]: 'Неверный email' });
+        setIsValid(false);
+      }
+    } else {
+      setValues({ ...values, [name]: value });
+      setErrors({ ...errors, [name]: target.validationMessage });
+      setIsValid(target.closest('form').checkValidity());
+    }
   };
 
-  const resetForm = React.useCallback(
+  const resetForm = useCallback(
     (newValues = {}, newErrors = {}, newIsValid = false) => {
       setValues(newValues);
       setErrors(newErrors);
@@ -27,33 +41,4 @@ export function useFormWithValidation(input) {
   return {
     values, handleChange, errors, isValid, resetForm,
   };
-}
-
-export function useWindowWidth() {
-  const [windowWidth, setWindowWidth] = useState(undefined);
-
-  useEffect(() => {
-    function handleResize() {
-      setWindowWidth(window.innerWidth);
-    }
-
-    window.addEventListener('resize', handleResize);
-
-    handleResize();
-
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  return windowWidth;
-}
-
-// хук управления количеством фильмов на экране
-export function useVisibleMoviesQuantity() {
-  const windowWidth = useWindowWidth();
-
-  const { initialQuantity, addQuantity } = useMemo(
-    () => defineMovieQuantityParams({ windowWidth }), [windowWidth],
-  );
-
-  return { initialQuantity, addQuantity };
 }

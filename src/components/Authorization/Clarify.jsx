@@ -4,7 +4,7 @@ import { CurrentLocationContext } from '../../contexts/CurrentLocationContext';
 import { CLARIFY_REGISTER, CLARIFY_LOGIN } from '../../utils/constants';
 import { findEndPoint } from '../../utils/utils';
 
-const Clarify = () => {
+export default function Clarify() {
   const [state, setState] = useState({
     question: '',
     action: '',
@@ -31,6 +31,4 @@ const Clarify = () => {
       <Link to={state.linkTo}><p className="auth__link">{state.action}</p></Link>
     </div>
   );
-};
-
-export default Clarify;
+}

@@ -1,10 +1,10 @@
 import React from 'react';
 
-const FormField = ({
+export default function FormField({
   type, name, visibleName, handleChange, autoComplete, errors, minLength = 2, className = 'auth', defaultValue = '',
   inputDisable = false,
   // value,
-}) => {
+}) {
   const isNotValid = () => {
     if (errors[name]) {
       return true;
@@ -32,6 +32,4 @@ const FormField = ({
       <span className="auth__input-error" style={{ visibility: isNotValid() ? 'visible' : 'hidden' }}>{errors[name]}</span>
     </>
   );
-};
-
-export default FormField;
+}
