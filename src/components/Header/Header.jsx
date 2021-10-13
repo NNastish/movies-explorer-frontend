@@ -1,19 +1,20 @@
 import React from 'react';
-import './Header.css';
-import logo from '../../images/logo.svg';
-import {Link} from 'react-router-dom';
+import Navigation from '../Navigation/Navigation';
+import AuthenticationHeader from './AuthenticationHeader/AuthenticationHeader';
 
-function Header() {
-    return (
-        <header className={'header'}>
-            <div className={'header__container'}>
-                <Link to='/'> <img className='header__logo' alt='Логотип' src={logo} /></Link>
-                <div className={'header__nav'}>
-                    <button className={'header__button'}>Регистрация</button>
-                    <button className={'header__button header__button_active'}>Войти</button>
-                </div>
-            </div>
-        </header>
-    )
-}
+const Header = ({ loggedIn, showHeader }) => {
+  const determineHeader = (loginStatus) => {
+    if (loginStatus) {
+      return <Navigation />;
+    }
+    return <AuthenticationHeader />;
+  };
+
+  return (
+    <div>
+      {showHeader && determineHeader(loggedIn)}
+    </div>
+  );
+};
+
 export default Header;

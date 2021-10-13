@@ -1,66 +1,87 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 import '../../index.css';
 import './App.css';
-import { Route, Switch } from 'react-router-dom';
-import AboutProject from '../AboutProject/AboutProject';
-import Profile from '../Profile/Profile';
-import Login from '../Login/Login';
-import Register from '../Register/Register';
+import RouteController from '../RouteController';
 import Header from '../Header/Header';
-import Techs from '../Techs/Techs';
-import AboutMe from '../AboutMe/AboutMe';
-import Portfolio from '../Portfolio/Portfolio';
 import Footer from '../Footer/Footer';
-import NotFound from '../NotFound/NotFound';
-import Navigation from '../Navigation/Navigation';
-import SearchForm from '../SearchForm/SearchForm';
-import MoviesCardList from '../MoviesCardList/MoviesCardList';
-import Promo from '../Promo/Promo';
-import Main from "../Main/Main";
-import NavTab from "../NavTab/NavTab";
+import { getSearchedMovies, isHeaderFooterVisible, showError } from '../../utils/utils';
+import { CurrentUserContext } from '../../contexts/CurrentUserContext';
+import { CurrentLocationContext } from '../../contexts/CurrentLocationContext';
+import * as api from '../../utils/MainApi';
 
+export default function App() {
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [movies, setMovies] = useState(getSearchedMovies());
+  const [headerFooterVisibility, setHeaderFooterVisibility] = useState(false);
+  const [currentUser, setCurrentUser] = useState({});
+  const currentLocation = useLocation();
+  const history = useHistory();
+  console.log(history);
+  function promoteLogging(userData) {
+    setCurrentUser(userData);
+    setLoggedIn(true);
+  }
 
-function App() {
-    return (
-        <div className={'App'}>
-            <Switch>
-                <Route exact path='/'>
-                    <Header />
-                    <Promo />
-                    <AboutProject />
-                    <Techs />
-                    <AboutMe />
-                    <Portfolio />
-                    <Footer />
-                </Route>
-                <Route path='/movies'>
-                    <Navigation />
-                    <SearchForm />
-                    <MoviesCardList yandexDb={true}/>
-                    <Footer />
-                </Route>
-                <Route path='/saved-movies'>
-                    <Navigation />
-                    <SearchForm />
-                    <MoviesCardList yandexDb={false}/>
-                    <Footer />
-                </Route>
-                <Route path='/profile'>
-                    <Navigation />
-                    <Profile />
-                </Route>
-                <Route path='/signin'>
-                    <Login />
-                </Route>
-                <Route path='/signup'>
-                    <Register />
-                </Route>
-                <Route path='/notfound'>
-                    <NotFound />
-                </Route>
-            </Switch>
+  function handleExit() {
+    localStorage.removeItem('jwt');
+    localStorage.removeItem('movies');
+    localStorage.removeItem('searchedMovies');
+    setLoggedIn(false);
+    setMovies([]);
+    setCurrentUser({ email: '', name: '', _id: '' });
+    history.push('/signin');
+  }
+
+  async function tokenCheck() {
+    try {
+      const jwt = localStorage.getItem('jwt');
+      if (jwt) {
+        const userData = await api.getUserContent(jwt);
+        delete userData.__v;
+        if (userData) {
+          promoteLogging(userData);
+        }
+      }
+    } catch (e) {
+      showError(e);
+    }
+  }
+
+  useEffect(() => {
+    isHeaderFooterVisible(currentLocation, setHeaderFooterVisibility);
+  }, [currentLocation]);
+
+  useEffect(() => {
+    tokenCheck();
+  }, []);
+
+  return (
+    <CurrentUserContext.Provider value={currentUser}>
+      <CurrentLocationContext.Provider value={currentLocation}>
+
+        <div className="App">
+
+          <Header
+            loggedIn={loggedIn}
+            showHeader={headerFooterVisibility}
+          />
+
+          <RouteController
+            loggedIn={loggedIn}
+            promoteLogging={promoteLogging}
+            showError={showError}
+            setCurrentUser={setCurrentUser}
+            handleExit={handleExit}
+            films={movies}
+          />
+
+          <Footer
+            showFooter={headerFooterVisibility}
+          />
         </div>
-    );
-}
 
-export default App;
+      </CurrentLocationContext.Provider>
+    </CurrentUserContext.Provider>
+  );
+}

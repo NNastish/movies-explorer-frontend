@@ -2,6 +2,7 @@
 
 .App {
     font-family: 'Inter', 'Arial', 'Helvetica', sans-serif;
+    min-height: 100vh;
 }
 
 
